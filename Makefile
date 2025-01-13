@@ -30,9 +30,9 @@ yaml-lint: $(PHP_CONSOLE_DEPS)
 
 FIXER_CMD=vendor/bin/php-cs-fixer fix
 
-fixer: $(PHP_CONSOLE_DEPS)
+php-cs: $(PHP_CONSOLE_DEPS)
 	@$(PHP) $(FIXER_CMD) --verbose
-fixer-gitlab:
+php-cs-gitlab:
 	@$(PHP) $(FIXER_CMD) --dry-run --using-cache=no --show-progress=none -v
 
 PHPSTAN_CMD=vendor/bin/phpstan analyse src tests
@@ -47,7 +47,7 @@ RECTOR_CMD=vendor/bin/rector process
 rector: $(PHP_CONSOLE_DEPS)
 	@$(PHP) $(RECTOR_CMD)
 
-check: fixer phpstan rector
+check: php-cs phpstan rector
 
 phpunit: $(PHP_CONSOLE_DEPS)
 	@$(PHP) bin/phpunit

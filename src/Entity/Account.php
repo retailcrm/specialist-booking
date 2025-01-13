@@ -26,7 +26,7 @@ class Account
 
     public function __construct(
         string $url,
-        string $apiKey
+        string $apiKey,
     ) {
         $this->url = $url;
         $this->apiKey = $apiKey;

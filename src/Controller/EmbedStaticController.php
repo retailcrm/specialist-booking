@@ -12,9 +12,8 @@ class EmbedStaticController extends AbstractController
 {
     public function __construct(
         #[Autowire('%kernel.project_dir%/public/embed/booking')]
-        private readonly string $embedDir
+        private readonly string $embedDir,
     ) {
-
     }
 
     #[Route(path: '/embed/booking/{path}', name: 'embed_static', methods: ['GET'])]
