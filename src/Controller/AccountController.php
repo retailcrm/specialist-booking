@@ -30,8 +30,8 @@ class AccountController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $account = new Account(
-                $accountModel->url,
-                $accountModel->apiKey
+                (string) $accountModel->url,
+                (string) $accountModel->apiKey
             );
             $em->persist($account);
             $em->flush();
