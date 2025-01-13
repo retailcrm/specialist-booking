@@ -1,0 +1,54 @@
+# from https://symfony.com/doc/current/setup/web_server_configuration.html#nginx
+
+listen 80;
+
+location / {
+    # try to serve file directly, fallback to index.php
+    try_files $uri @backend;
+}
+
+location /build/ {
+    try_files $uri @frontend;
+}
+
+location @frontend {
+    log_not_found off;
+
+    proxy_pass http://node:8040;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    set $connection_upgrade 'upgrade';
+    if ($http_upgrade = '') {
+        set $connection_upgrade 'close';
+    }
+    proxy_set_header Host $http_host;
+    proxy_set_header Connection $connection_upgrade;
+}
+
+location @backend {
+    include fastcgi_params;
+
+    fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+    fastcgi_param SCRIPT_NAME index.php;
+    fastcgi_index index.php;
+    fastcgi_split_path_info ^(.+\.php)(/.*)$;
+
+    fastcgi_pass php:9000;
+    fastcgi_read_timeout 240s;
+
+    fastcgi_buffer_size 128k;
+    fastcgi_busy_buffers_size 256k;
+    fastcgi_buffers 4 256k;
+}
+
+# return 404 for all other php files not matching the front controller
+# this prevents access to other php files you don't want to be accessible.
+location ~ \.php$ {
+    return 404;
+}
+
+location /favicon.ico {
+    access_log off;
+
+    return 404;
+}

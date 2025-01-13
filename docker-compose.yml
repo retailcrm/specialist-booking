@@ -1,0 +1,35 @@
+services:
+    node:
+        build: ./docker/dev/node
+        environment:
+            HOME: /var/app
+            YARN_CACHE_FOLDER: /yarn
+        working_dir: /var/app
+        volumes:
+            - ./:/var/app
+            - ${HOME}/.yarn:/yarn
+    php:
+        build:
+            context: ./docker/dev/php
+            args:
+                PHP_VERSION: ${PHP_VERSION:-8.3}
+        env_file: .env
+        volumes:
+            - ./:/var/www/booking
+        environment:
+            COMPOSER_HOME: /tmp/composer
+        tmpfs:
+            - /tmp
+    nginx:
+        build: ./docker/dev/nginx
+        volumes:
+            - ./:/var/www/booking:ro
+            - ./docker/dev/nginx/etc/app.conf:/etc/nginx/conf.d/default.conf:ro
+            - ./docker/dev/nginx/etc/app-defaults:/etc/nginx/app-defaults:ro
+        labels:
+            traefik.enable: 'true'
+            traefik.http.routers.booking.entrypoints: web
+            traefik.http.routers.booking.service: booking
+            traefik.http.routers.booking.rule: 'Host(`booking.test`)'
+            traefik.http.services.booking.loadbalancer.server.port: '80'
+            dev.orbstack.domains: 'booking.local'
