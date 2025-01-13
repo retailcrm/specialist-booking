@@ -8,8 +8,8 @@ final class AccountModel
 {
     #[Assert\NotBlank]
     #[Assert\Url]
-    public ?string $url;
+    public ?string $url = null;
 
     #[Assert\NotBlank]
-    public ?string $apiKey;
+    public ?string $apiKey = null;
 }
