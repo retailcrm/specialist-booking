@@ -52,15 +52,11 @@ check: fixer phpstan rector
 phpunit: $(PHP_CONSOLE_DEPS)
 	@$(PHP) bin/phpunit
 
-JS_PACKAGE_MANAGER=docker compose run --rm --no-deps node yarn
-JS_BUILD_DEPS=$(PHP_CONSOLE_DEPS) node_modules
+node-modules:
+	@cd embed && make node-modules
 
-node_modules: package.json yarn.lock ## установить js зависимости
-	$(JS_PACKAGE_MANAGER) install
-	@touch node_modules || true
+js-build:
+	@cd embed && make build
 
-js-build-dev: $(JS_BUILD_DEPS) ## собрать js (dev режим)
-	$(JS_PACKAGE_MANAGER) dev
-
-js-build-prod: $(JS_BUILD_DEPS) ## собрать js (prod режим)
-	$(JS_PACKAGE_MANAGER) build
+js-lint:
+	@cd embed && make lint

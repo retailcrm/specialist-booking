@@ -7,24 +7,6 @@ location / {
     try_files $uri @backend;
 }
 
-location /build/ {
-    try_files $uri @frontend;
-}
-
-location @frontend {
-    log_not_found off;
-
-    proxy_pass http://node:8040;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    set $connection_upgrade 'upgrade';
-    if ($http_upgrade = '') {
-        set $connection_upgrade 'close';
-    }
-    proxy_set_header Host $http_host;
-    proxy_set_header Connection $connection_upgrade;
-}
-
 location @backend {
     include fastcgi_params;
 

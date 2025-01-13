@@ -23,13 +23,6 @@
 .phpunit.result.cache
 ###< phpunit/phpunit ###
 
-###> symfony/webpack-encore-bundle ###
-/node_modules/
-/public/build/
-npm-debug.log
-yarn-error.log
-###< symfony/webpack-encore-bundle ###
-
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
 /phpunit.xml
@@ -39,3 +32,7 @@ yarn-error.log
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+###> js-module ###
+/public/embed/
+###< js-module ###

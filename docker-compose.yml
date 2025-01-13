@@ -1,13 +1,4 @@
 services:
-    node:
-        build: ./docker/dev/node
-        environment:
-            HOME: /var/app
-            YARN_CACHE_FOLDER: /yarn
-        working_dir: /var/app
-        volumes:
-            - ./:/var/app
-            - ${HOME}/.yarn:/yarn
     php:
         build:
             context: ./docker/dev/php
