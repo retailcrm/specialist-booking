@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AccountRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AccountRepository::class)]
@@ -24,6 +26,12 @@ class Account
     #[ORM\Column(length: 255, unique: true)]
     private string $clientId;
 
+    /**
+     * @var Collection<int, Specialist>
+     */
+    #[ORM\OneToMany(targetEntity: Specialist::class, mappedBy: 'account', orphanRemoval: true)]
+    private Collection $specialists;
+
     public function __construct(
         string $url,
         string $apiKey,
@@ -31,6 +39,7 @@ class Account
         $this->url = $url;
         $this->apiKey = $apiKey;
         $this->clientId = self::MODULE_CODE . '-' . uniqid('', false);
+        $this->specialists = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,6 +79,36 @@ class Account
     public function setClientId(string $clientId): static
     {
         $this->clientId = $clientId;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Specialist>
+     */
+    public function getSpecialists(): Collection
+    {
+        return $this->specialists;
+    }
+
+    public function addSpecialist(Specialist $specialist): static
+    {
+        if (!$this->specialists->contains($specialist)) {
+            $this->specialists->add($specialist);
+            $specialist->setAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSpecialist(Specialist $specialist): static
+    {
+        if ($this->specialists->removeElement($specialist)) {
+            // set the owning side to null (unless already changed)
+            if ($specialist->getAccount() === $this) {
+                $specialist->setAccount(null);
+            }
+        }
 
         return $this;
     }
