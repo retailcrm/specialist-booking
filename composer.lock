@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "85fba6a65a0809c9b916c3dc092b7304",
+    "content-hash": "0087d6cf93fda3dfe532df236410fa7f",
     "packages": [
         {
             "name": "civicrm/composer-compile-plugin",
@@ -2750,16 +2750,16 @@
         },
         {
             "name": "retailcrm/api-client-php",
-            "version": "dev-integration-embed-js",
+            "version": "v6.15.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/retailcrm/api-client-php.git",
-                "reference": "c21a89c761a1a8ab34a1892331bf8f8cd8cebf24"
+                "reference": "27e9e8eaa57d96496a27d9e5a7c4589a915e0477"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/retailcrm/api-client-php/zipball/c21a89c761a1a8ab34a1892331bf8f8cd8cebf24",
-                "reference": "c21a89c761a1a8ab34a1892331bf8f8cd8cebf24",
+                "url": "https://api.github.com/repos/retailcrm/api-client-php/zipball/27e9e8eaa57d96496a27d9e5a7c4589a915e0477",
+                "reference": "27e9e8eaa57d96496a27d9e5a7c4589a915e0477",
                 "shasum": ""
             },
             "require": {
@@ -2849,9 +2849,9 @@
             "support": {
                 "email": "support@retailcrm.pro",
                 "issues": "https://github.com/retailcrm/api-client-php/issues",
-                "source": "https://github.com/retailcrm/api-client-php/tree/integration-embed-js"
+                "source": "https://github.com/retailcrm/api-client-php/tree/v6.15.12"
             },
-            "time": "2025-01-13T19:28:31+00:00"
+            "time": "2025-01-14T06:23:27+00:00"
         },
         {
             "name": "symfony/asset",
@@ -11510,9 +11510,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "retailcrm/api-client-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
