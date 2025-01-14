@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Specialists Management{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Manage Specialists</h1>
+
+        {{ form_start(form) }}
+        <div class="specialists-collection" 
+             data-prototype="{{ form_widget(form.specialists.vars.prototype)|e('html_attr') }}"
+             data-index="{{ form.specialists|length }}">
+            
+            {% for specialistForm in form.specialists %}
+                <div class="specialist-item">
+                    {{ form_row(specialistForm.id) }}
+                    {{ form_row(specialistForm.name) }}
+                    {{ form_row(specialistForm.position) }}
+                    {{ form_row(specialistForm.ordering) }}
+                    
+                    {% if specialistForm.vars.data.photo %}
+                        <div class="photo-preview">
+                            <img src="{{ asset('uploads/specialists/' ~ specialistForm.vars.data.photo) }}" alt="Specialist photo">
+                        </div>
+                    {% endif %}
+                    
+                    {{ form_row(specialistForm.photoFile) }}
+
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-specialist-btn">
+                        Remove specialist
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="specialist-buttons-bar">
+            <a href="{{ path('account_settings') }}"><button type="button" class="btn btn-secondary btn-sm">
+                ← Back to settings
+            </button></a>
+            <button type="button" class="btn btn-secondary btn-sm add-specialist-btn">
+                Add specialist
+            </button>
+        </div>
+
+        <div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.specialists-collection');
+            const addButton = document.querySelector('.add-specialist-btn');
+            let index = container.dataset.index;
+
+            // Add new specialist
+            addButton.addEventListener('click', function() {
+                const prototype = container.dataset.prototype;
+                const newForm = prototype.replace(/__name__/g, index);
+                const specialistItem = document.createElement('div');
+                specialistItem.className = 'specialist-item';
+                specialistItem.innerHTML = newForm;
+                
+                // Add remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'btn btn-outline-danger btn-sm remove-specialist-btn';
+                removeBtn.innerHTML = 'Remove specialist';
+                specialistItem.append(removeBtn);
+                
+                container.appendChild(specialistItem);
+                index++;
+                container.dataset.index = index;
+
+                // Initialize remove button handler
+                initializeRemoveButton(removeBtn);
+            });
+
+            // Initialize existing remove buttons
+            document.querySelectorAll('.remove-specialist-btn').forEach(initializeRemoveButton);
+
+            // Photo preview
+            document.addEventListener('change', function(e) {
+                if (e.target.type === 'file') {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        let previewContainer = e.target.closest('.specialist-item').querySelector('.photo-preview');
+                        
+                        if (!previewContainer) {
+                            previewContainer = document.createElement('div');
+                            previewContainer.className = 'photo-preview';
+                            e.target.parentNode.insertBefore(previewContainer, e.target);
+                        }
+
+                        reader.onload = function(e) {
+                            previewContainer.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                        };
+
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+        });
+
+        function initializeRemoveButton(button) {
+            button.addEventListener('click', function() {
+                button.closest('.specialist-item').remove();
+            });
+        }
+    </script>
+{% endblock %}

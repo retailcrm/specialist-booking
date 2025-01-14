@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Account;
 use App\Form\Model\AccountModel;
 use App\Form\Type\AccountType;
-use App\Repository\AccountRepository;
 use App\Service\ClientIdHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use RetailCrm\Api\Factory\SimpleClientFactory;
@@ -106,17 +105,9 @@ class AccountController extends AbstractController
         name: 'account_settings',
         methods: ['GET', 'POST'],
     )]
-    public function settings(
-        Request $request,
-        AccountRepository $repository,
-        ClientIdHandler $clientIdHandler,
-    ): Response {
-        $clientId = $clientIdHandler->handle($request);
-        if (!$clientId) {
-            throw $this->createNotFoundException();
-        }
-
-        $account = $repository->getByClientId($clientId);
+    public function settings(Request $request, ClientIdHandler $clientIdHandler): Response
+    {
+        $account = $clientIdHandler->getAccount($request);
         if (!$account) {
             throw $this->createNotFoundException();
         }
