@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: AccountRepository::class)]
 class Account
 {
-    public const MODULE_CODE = 's-booking';
+    public const string MODULE_CODE = 's-booking';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,8 +29,11 @@ class Account
     /**
      * @var Collection<int, Specialist>
      */
-    #[ORM\OneToMany(targetEntity: Specialist::class, mappedBy: 'account', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Specialist::class, mappedBy: 'account', cascade: ['all'], orphanRemoval: true)]
     private Collection $specialists;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $locale = null;
 
     public function __construct(
         string $url,
@@ -109,6 +112,23 @@ class Account
                 $specialist->setAccount(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    public function getRequiredLocale(): string
+    {
+        return $this->locale ?? 'en_GB';
+    }
+
+    public function setLocale(?string $locale): static
+    {
+        $this->locale = $locale;
 
         return $this;
     }

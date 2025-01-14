@@ -8,7 +8,9 @@ use App\Form\Model\SpecialistModel;
 use App\Form\Type\SpecialistCollectionType;
 use App\Repository\SpecialistRepository;
 use App\Service\ClientIdHandler;
+use App\Service\CustomFieldManager;
 use Doctrine\ORM\EntityManagerInterface;
+use RetailCrm\Api\Factory\SimpleClientFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,8 +30,11 @@ class SpecialistController extends AbstractController
     }
 
     #[Route(path: '/settings/specialists', name: 'specialist_index', methods: ['GET', 'POST'])]
-    public function index(Request $request, ClientIdHandler $clientIdHandler): Response
-    {
+    public function index(
+        Request $request,
+        ClientIdHandler $clientIdHandler,
+        CustomFieldManager $customFieldManager,
+    ): Response {
         $account = $clientIdHandler->getAccount($request);
         if (!$account) {
             throw $this->createNotFoundException();
@@ -96,6 +101,11 @@ class SpecialistController extends AbstractController
             }
 
             $this->em->flush();
+
+            // sync with custom fields
+            $client = SimpleClientFactory::createClient($account->getUrl(), $account->getApiKey());
+            $specialists = $this->specialistRepository->findByAccountOrderedByOrdering($account);
+            $customFieldManager->ensureCustomFields($client, $specialists);
 
             return $this->redirectToRoute('specialist_index');
         }

@@ -6,6 +6,7 @@ use App\Entity\Account;
 use App\Form\Model\AccountModel;
 use App\Form\Type\AccountType;
 use App\Service\ClientIdHandler;
+use App\Service\CustomFieldManager;
 use Doctrine\ORM\EntityManagerInterface;
 use RetailCrm\Api\Factory\SimpleClientFactory;
 use RetailCrm\Api\Interfaces\ApiExceptionInterface;
@@ -34,6 +35,7 @@ class AccountController extends AbstractController
     public function register(
         Request $request,
         EntityManagerInterface $em,
+        CustomFieldManager $customFieldManager,
     ): Response {
         $accountModel = new AccountModel();
         $form = $this->createForm(AccountType::class, $accountModel);
@@ -46,16 +48,35 @@ class AccountController extends AbstractController
 
             $client = SimpleClientFactory::createClient($accountModel->url, $accountModel->apiKey);
 
-            // register module
+            // get locale
             try {
-                $client->integration->edit(
-                    $account->getClientId(),
-                    new IntegrationModulesEditRequest(
-                        $this->getIntegrationModuleData($account)
-                    )
-                );
+                $accountLocale = $client->settings->get()->settings->systemLanguage->value;
+                $account->setLocale($accountLocale);
             } catch (ApiExceptionInterface|ClientExceptionInterface $e) {
                 $form->addError(new FormError(sprintf('Error of module registering: %s', $e->getMessage())));
+            }
+
+            if ($form->isValid()) {
+                // register module
+                try {
+                    $client->integration->edit(
+                        $account->getClientId(),
+                        new IntegrationModulesEditRequest(
+                            $this->getIntegrationModuleData($account)
+                        )
+                    );
+                } catch (ApiExceptionInterface|ClientExceptionInterface $e) {
+                    $form->addError(new FormError(sprintf('Error of module registering: %s', $e->getMessage())));
+                }
+            }
+
+            if ($form->isValid()) {
+                // create necessary custom fields
+                try {
+                    $customFieldManager->ensureCustomFields($client);
+                } catch (ApiExceptionInterface|ClientExceptionInterface $e) {
+                    $form->addError(new FormError(sprintf('Error of module registering: %s', $e->getMessage())));
+                }
             }
 
             if ($form->isValid()) {
