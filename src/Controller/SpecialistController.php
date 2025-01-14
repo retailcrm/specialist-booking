@@ -24,7 +24,7 @@ class SpecialistController extends AbstractController
         private readonly EntityManagerInterface $em,
         private readonly SpecialistRepository $specialistRepository,
         private readonly SluggerInterface $slugger,
-        #[Autowire('%specialists_dir%')]
+        #[Autowire('%kernel.project_dir%/public%specialists_dir%')]
         private readonly string $specialistsUploadDir,
     ) {
     }

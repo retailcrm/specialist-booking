@@ -15,9 +15,9 @@ use RetailCrm\Api\Model\Request\CustomFields\CustomFieldsCreateRequest;
 
 final class CustomFieldManager
 {
-    private const string ELEMENT_CODE_PREFIX = 's-';
     private const string ENTITY = 'order';
 
+    public const string ELEMENT_CODE_PREFIX = 's-';
     public const string CUSTOM_FIELD_SPECIALIST_CODE = 's_booking_specialist';
     public const string CUSTOM_FIELD_DATETIME_CODE = 's_booking_specialist_datetime';
 

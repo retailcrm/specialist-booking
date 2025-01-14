@@ -3,10 +3,15 @@
         <div
             v-for="specialist in specialists"
             :key="specialist.id"
-            :class="$style.specialist"
+            :class="[$style.specialist, { [$style.specialist_selected]: specialist.id === currentSpecialist }]"
         >
             <div :class="$style.info" @click="$emit('select-specialist', specialist)">
-                <img :src="specialist.photo" :class="$style.photo" :alt="specialist.name" />
+                <UiAvatar
+                    :src="specialist.photo"
+                    :size="'lg'"
+                    :class="$style.photo"
+                    :name="specialist.name"
+                />
                 <div :class="$style.details">
                     <div :class="$style.name">
                         {{ specialist.name }}
@@ -25,8 +30,8 @@
                     <UiButton
                         v-for="time in specialist.nearestSlots.slots"
                         :key="time"
-                        @click="$emit('select-slot', specialist.id, specialist.nearestSlots.date, time)"
                         appearance="outlined"
+                        @click="$emit('select-slot', specialist, specialist.nearestSlots.date, time)"
                     >
                         {{ time }}
                     </UiButton>
@@ -37,12 +42,13 @@
 </template>
 
 <script setup lang="ts">
-import { UiButton } from '@retailcrm/embed-ui-v1-components/remote'
+import { UiButton, UiAvatar } from '@retailcrm/embed-ui-v1-components/remote'
 import { format } from 'date-fns'
 import { enGB, es, ru } from 'date-fns/locale'
 import type { Specialist } from '../types'
 
 const props = defineProps<{
+    currentSpecialist: string | null
     specialists: Specialist[]
     t: (key: string) => string
     locale: string
@@ -50,7 +56,7 @@ const props = defineProps<{
 
 defineEmits<{
     (e: 'select-specialist', specialist: Specialist): void
-    (e: 'select-slot', specialistId: string, date: string, time: string): void
+    (e: 'select-slot', specialist: Specialist, date: string, time: string): void
 }>()
 
 const locales = {
@@ -83,6 +89,11 @@ const formatDate = (date: string) => {
   overflow: hidden;
 }
 
+.specialist_selected {
+  border-color: #005EEB;
+  box-shadow: 0 0 0 4px rgba(0, 94, 235, 0.2);
+}
+
 .info {
   display: flex;
   padding: 16px;
@@ -92,13 +103,6 @@ const formatDate = (date: string) => {
   &:hover {
     background: @blue-transparent;
   }
-}
-
-.photo {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
 }
 
 .details {

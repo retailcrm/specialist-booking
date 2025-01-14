@@ -6,7 +6,10 @@
         </UiButton>
 
         <div :class="$style.specialist_info">
-            <img :src="specialist.photo" :class="$style.photo" :alt="specialist.name" />
+            <UiAvatar
+                :src="specialist.photo"
+                :name="specialist.name"
+            />
             <div :class="$style.details">
                 <div :class="$style.name">
                     {{ specialist.name }}
@@ -58,9 +61,9 @@
                 <UiButton
                     v-for="slot in availableSlots[formatDateKey(selectedDate)]"
                     :key="slot"
-                    @click="$emit('select-slot', specialist.id, formatDateKey(selectedDate), slot)"
                     appearance="outlined"
-                    >
+                    @click="$emit('select-slot', formatDateKey(selectedDate), slot)"
+                >
                     {{ slot }}
                 </UiButton>
             </div>
@@ -72,7 +75,7 @@
 import IconBack from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/arrow-backward.svg'
 import IconPrev from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/chevron-right.svg'
 import IconNext from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/chevron-right.svg'
-import { UiButton } from '@retailcrm/embed-ui-v1-components/remote'
+import { UiButton, UiAvatar } from '@retailcrm/embed-ui-v1-components/remote'
 import { ref, computed } from 'vue'
 import {
     startOfMonth,
@@ -176,13 +179,6 @@ const selectDate = (date: Date) => {
   gap: 16px;
   margin-top: 16px;
   margin-bottom: 24px;
-}
-
-.photo {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
 }
 
 .name {

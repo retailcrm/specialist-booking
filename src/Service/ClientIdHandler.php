@@ -15,11 +15,16 @@ final readonly class ClientIdHandler
     ) {
     }
 
-    public function handle(Request $request): string
+    public function handle(Request $request, bool $onlyFromRequest = false): string
     {
         $session = $request->getSession();
 
         $clientId = $request->query->getString('clientId') ?: $request->request->getString('clientId');
+
+        if ($onlyFromRequest) {
+            return $clientId;
+        }
+
         if ('' !== $clientId) {
             $session->set(self::CLIENT_ID_KEY, $clientId);
 
@@ -29,9 +34,9 @@ final readonly class ClientIdHandler
         return (string) $session->get(self::CLIENT_ID_KEY, '');
     }
 
-    public function getAccount(Request $request): ?Account
+    public function getAccount(Request $request, bool $onlyFromRequest = false): ?Account
     {
-        $clientId = $this->handle($request);
+        $clientId = $this->handle($request, $onlyFromRequest);
         if ('' === $clientId) {
             return null;
         }

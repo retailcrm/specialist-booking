@@ -1,13 +1,10 @@
 export interface Specialist {
   id: string
   name: string
-  position: string
-  photo: string
-  englishSpeaking?: boolean
-  rating?: number
-  reviewCount?: number
+  position: string | null
+  photo: string | null
   nearestSlots: {
     date: string
     slots: string[]
-  }
+  } | null
 }
