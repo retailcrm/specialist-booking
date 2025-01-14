@@ -12,6 +12,7 @@
     "@retailcrm/embed-ui-v1-components": "^0.5.6",
     "@retailcrm/embed-ui-v1-contexts": "^0.5.6",
     "@retailcrm/embed-ui-v1-types": "^0.5.6",
+    "date-fns": "^4.1.0",
     "pinia": "^2.2.8",
     "uuid": "^11.0.3",
     "vue": "^3.5.13",
