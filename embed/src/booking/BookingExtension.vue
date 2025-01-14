@@ -12,22 +12,22 @@
             <template #title>
                 {{ t('title') }}
             </template>
-            <BarbersList
-                v-if="currentView === 'barbers'"
-                :barbers="barbers"
+            <SpecialistsList
+                v-if="currentView === 'specialists'"
+                :specialists="specialists"
                 :t="t"
                 :locale="locale"
                 @select-slot="handleSlotSelect"
-                @select-barber="handleBarberSelect"
+                @select-specialist="handleSpecialistSelect"
             />
-            <BarberCalendar
+            <SpecialistCalendar
                 v-else
-                :barber="selectedBarber"
+                :specialist="selectedSpecialist"
                 :available-slots="availableSlots"
                 :t="t"
                 :locale="locale"
                 @select-slot="handleSlotSelect"
-                @back="currentView = 'barbers'"
+                @back="currentView = 'specialists'"
             />
 
             <template #footer>
@@ -45,9 +45,9 @@ import IconCalendar from  '@retailcrm/embed-ui-v1-components/assets/sprites/acti
 import { UiToolbarButton, UiModalSidebar, UiButton } from '@retailcrm/embed-ui-v1-components/remote'
 import { useI18n } from 'vue-i18n'
 import { useSettingsContext as useSettings, useField } from '@retailcrm/embed-ui'
-import BarbersList from './components/BarbersList.vue'
-import BarberCalendar from './components/BarberCalendar.vue'
-import type { Barber } from './types'
+import SpecialistsList from './components/SpecialistsList.vue'
+import SpecialistCalendar from './components/SpecialistCalendar.vue'
+import type { Specialist } from './types'
 
 // i18n setup
 const settings = useSettings()
@@ -61,8 +61,8 @@ watch(locale, locale => i18n.locale.value = locale, { immediate: true })
 
 // component logic
 const showBookingSidebar = ref(false)
-const currentView = ref<'barbers' | 'calendar'>('barbers')
-const selectedBarber = ref<Barber | null>(null)
+const currentView = ref<'specialists' | 'calendar'>('specialists')
+const selectedSpecialist = ref<Specialist | null>(null)
 
 // Mock data for available slots
 const availableSlots = ref<Record<string, string[]>>({
@@ -71,8 +71,8 @@ const availableSlots = ref<Record<string, string[]>>({
     '2025-01-18': ['11:00', '11:30', '12:00', '12:30', '13:00'],
 })
 
-// Mock data for barbers
-const barbers = ref<Barber[]>([
+// Mock data for specialists
+const specialists = ref<Specialist[]>([
     {
         id: '1',
         name: 'Виталий Князь',
@@ -95,16 +95,16 @@ const barbers = ref<Barber[]>([
     },
 ])
 
-const handleBarberSelect = (barber: Barber) => {
-    selectedBarber.value = barber
+const handleSpecialistSelect = (specialist: Specialist) => {
+    selectedSpecialist.value = specialist
     currentView.value = 'calendar'
 }
 
-const handleSlotSelect = (barberId: string, date: string, time: string) => {
+const handleSlotSelect = (specialistId: string, date: string, time: string) => {
   // Handle slot selection (e.g., save to backend)
-    console.log('Selected slot:', { barberId, date, time })
+    console.log('Selected slot:', { specialistId, date, time })
     showBookingSidebar.value = false
-    currentView.value = 'barbers' // Reset view for next opening
+    currentView.value = 'specialists' // Reset view for next opening
 }
 </script>
 

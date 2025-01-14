@@ -1,31 +1,31 @@
 <template>
     <div :class="$style.container">
         <div
-            v-for="barber in barbers"
-            :key="barber.id"
-            :class="$style.barber"
+            v-for="specialist in specialists"
+            :key="specialist.id"
+            :class="$style.specialist"
         >
-            <div :class="$style.info" @click="$emit('select-barber', barber)">
-                <img :src="barber.photo" :class="$style.photo" :alt="barber.name" />
+            <div :class="$style.info" @click="$emit('select-specialist', specialist)">
+                <img :src="specialist.photo" :class="$style.photo" :alt="specialist.name" />
                 <div :class="$style.details">
                     <div :class="$style.name">
-                        {{ barber.name }}
+                        {{ specialist.name }}
                     </div>
                     <div :class="$style.position">
-                        {{ barber.position }}
+                        {{ specialist.position }}
                     </div>
                 </div>
             </div>
 
             <div :class="$style.slots">
                 <div :class="$style.date">
-                    {{ formatDate(barber.nearestSlots.date) }}
+                    {{ formatDate(specialist.nearestSlots.date) }}
                 </div>
                 <div :class="$style.times">
                     <UiButton
-                        v-for="time in barber.nearestSlots.slots"
+                        v-for="time in specialist.nearestSlots.slots"
                         :key="time"
-                        @click="$emit('select-slot', barber.id, barber.nearestSlots.date, time)"
+                        @click="$emit('select-slot', specialist.id, specialist.nearestSlots.date, time)"
                         appearance="outlined"
                     >
                         {{ time }}
@@ -40,17 +40,17 @@
 import { UiButton } from '@retailcrm/embed-ui-v1-components/remote'
 import { format } from 'date-fns'
 import { enGB, es, ru } from 'date-fns/locale'
-import type { Barber } from '../types'
+import type { Specialist } from '../types'
 
 const props = defineProps<{
-    barbers: Barber[]
+    specialists: Specialist[]
     t: (key: string) => string
     locale: string
 }>()
 
 defineEmits<{
-    (e: 'select-barber', barber: Barber): void
-    (e: 'select-slot', barberId: string, date: string, time: string): void
+    (e: 'select-specialist', specialist: Specialist): void
+    (e: 'select-slot', specialistId: string, date: string, time: string): void
 }>()
 
 const locales = {
@@ -77,7 +77,7 @@ const formatDate = (date: string) => {
   font-size: 14px;
 }
 
-.barber {
+.specialist {
   border: 1px solid @gray-border;
   border-radius: 8px;
   overflow: hidden;

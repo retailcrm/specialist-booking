@@ -1,4 +1,4 @@
-export interface Barber {
+export interface Specialist {
   id: string
   name: string
   position: string
@@ -11,13 +11,3 @@ export interface Barber {
     slots: string[]
   }
 }
-
-export interface Reservation {
-  id: string
-  barberId: string
-  date: string
-  time: string
-  customerName: string
-  phone: string
-  service: 'haircut' | 'shave' | 'beard-trim'
-} 

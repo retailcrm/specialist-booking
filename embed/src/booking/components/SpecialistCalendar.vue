@@ -5,14 +5,14 @@
             {{ t('back') }}
         </UiButton>
 
-        <div :class="$style.barber_info">
-            <img :src="barber.photo" :class="$style.photo" :alt="barber.name" />
+        <div :class="$style.specialist_info">
+            <img :src="specialist.photo" :class="$style.photo" :alt="specialist.name" />
             <div :class="$style.details">
                 <div :class="$style.name">
-                    {{ barber.name }}
+                    {{ specialist.name }}
                 </div>
                 <div :class="$style.position">
-                    {{ barber.position }}
+                    {{ specialist.position }}
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
                 <UiButton
                     v-for="slot in availableSlots[formatDateKey(selectedDate)]"
                     :key="slot"
-                    @click="$emit('select-slot', barber.id, formatDateKey(selectedDate), slot)"
+                    @click="$emit('select-slot', specialist.id, formatDateKey(selectedDate), slot)"
                     appearance="outlined"
                     >
                     {{ slot }}
@@ -86,10 +86,10 @@ import {
     addDays,
 } from 'date-fns'
 import { enGB, es, ru } from 'date-fns/locale'
-import type { Barber } from '../types'
+import type { Specialist } from '../types'
 
 const props = defineProps<{
-    barber: Barber
+    specialist: Specialist
     availableSlots: Record<string, string[]>
     t: (key: string) => string
     locale: string
@@ -97,7 +97,7 @@ const props = defineProps<{
 
 defineEmits<{
     (e: 'back'): void
-    (e: 'select-slot', barberId: string, date: string, time: string): void
+    (e: 'select-slot', specialistId: string, date: string, time: string): void
 }>()
 
 const currentDate = ref(new Date())
@@ -170,7 +170,7 @@ const selectDate = (date: Date) => {
   font-size: 14px;
 }
 
-.barber_info {
+.specialist_info {
   display: flex;
   align-items: center;
   gap: 16px;
