@@ -6,6 +6,7 @@ use App\Entity\Account;
 use App\Form\Model\AccountModel;
 use App\Form\Type\AccountType;
 use App\Repository\AccountRepository;
+use App\Service\ClientIdHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use RetailCrm\Api\Factory\SimpleClientFactory;
 use RetailCrm\Api\Interfaces\ApiExceptionInterface;
@@ -45,6 +46,8 @@ class AccountController extends AbstractController
             $account = new Account($accountModel->url, $accountModel->apiKey);
 
             $client = SimpleClientFactory::createClient($accountModel->url, $accountModel->apiKey);
+
+            // register module
             try {
                 $client->integration->edit(
                     $account->getClientId(),
@@ -103,9 +106,12 @@ class AccountController extends AbstractController
         name: 'account_settings',
         methods: ['GET', 'POST'],
     )]
-    public function settings(Request $request, AccountRepository $repository): Response
-    {
-        $clientId = $request->query->getString('clientId', '') ?: $request->request->getString('clientId', '');
+    public function settings(
+        Request $request,
+        AccountRepository $repository,
+        ClientIdHandler $clientIdHandler,
+    ): Response {
+        $clientId = $clientIdHandler->handle($request);
         if (!$clientId) {
             throw $this->createNotFoundException();
         }
