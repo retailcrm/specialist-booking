@@ -5,7 +5,6 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Profiler\Profiler;
@@ -21,25 +20,6 @@ class EmbedStaticController extends AbstractController
         string $embedDir,
     ) {
         $this->embedDir = $embedDir . self::EMBED_JS_PATH;
-    }
-
-    public function index(Profiler $profiler): Response
-    {
-        $profiler->disable();
-
-        $manifest = $this->getManifest();
-        if ($manifest instanceof NotFoundHttpException) {
-            throw $manifest;
-        }
-
-        $path = 'booking.js';
-        if (!isset($manifest[$path])) {
-            throw $this->createNotFoundException();
-        }
-
-        return $this->render('embed/index.html.twig', [
-            'path' => self::EMBED_JS_PATH . '/' . substr($manifest[$path], 2),
-        ]);
     }
 
     public function staticFile(Profiler $profiler, string $path): BinaryFileResponse

@@ -75,7 +75,7 @@ class AccountController extends AbstractController
     private function getIntegrationModuleData(Account $account): IntegrationModule
     {
         $embedJsConfiguration = new EmbedJsConfiguration();
-        $embedJsConfiguration->entrypoint = $this->generateUrl('embed_index');
+        $embedJsConfiguration->entrypoint = EmbedStaticController::EMBED_JS_PATH . '/index.html';
         $embedJsConfiguration->stylesheet = $this->generateUrl('embed_static', ['path' => 'booking.css']);
         $embedJsConfiguration->targets = ['order/card:customer.after'];
 
