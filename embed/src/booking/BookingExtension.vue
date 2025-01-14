@@ -9,9 +9,29 @@ import {
     UiToolbarButton,
 } from '@retailcrm/embed-ui-v1-components/remote'
 
-import { ref } from 'vue'
+import { useSettingsContext as useSettings } from '@retailcrm/embed-ui'
 
-// data
+import {
+    useField,
+} from '@retailcrm/embed-ui'
+
+import { useI18n } from 'vue-i18n'
+import { ref, watch } from 'vue'
+
+// ### LOCALE ###
+
+const settings = useSettings()
+const locale = useField(settings, 'system.locale')
+
+settings.initialize()
+
+const i18n = useI18n()
+const t = i18n.t
+
+watch(locale, locale => i18n.locale.value = locale, { immediate: true })
+
+// ### DATA ###
+
 const opened = ref(false)
 
 </script>

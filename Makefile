@@ -58,5 +58,8 @@ node-modules:
 js-build:
 	@cd embed && make build
 
+js-build-dev:
+	@cd embed && make build-dev
+
 js-lint:
 	@cd embed && make lint

@@ -30,7 +30,7 @@ class Account
     ) {
         $this->url = $url;
         $this->apiKey = $apiKey;
-        $this->clientId = self::MODULE_CODE . '-' . uniqid('', true);
+        $this->clientId = self::MODULE_CODE . '-' . uniqid('', false);
     }
 
     public function getId(): ?int

@@ -7,6 +7,9 @@ node-modules: package.json yarn.lock ## установить js зависимо
 build: node_modules ## собрать js (prod режим)
 	$(YARN) build
 
+build-dev: node_modules ## собрать js (prod режим)
+	$(YARN) build:dev
+
 lint: node_modules ## собрать js (prod режим)
 	$(YARN) lint
 

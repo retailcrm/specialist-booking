@@ -2,8 +2,10 @@
 
 namespace App\Form\Model;
 
+use App\Validator\CrmAccess;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[CrmAccess]
 final class AccountModel
 {
     #[Assert\NotBlank]

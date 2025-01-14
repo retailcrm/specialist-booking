@@ -7,11 +7,20 @@ use App\Form\Model\AccountModel;
 use App\Form\Type\AccountType;
 use App\Repository\AccountRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use RetailCrm\Api\Factory\SimpleClientFactory;
+use RetailCrm\Api\Interfaces\ApiExceptionInterface;
+use RetailCrm\Api\Interfaces\ClientExceptionInterface;
+use RetailCrm\Api\Model\Entity\Integration\EmbedJs\EmbedJsConfiguration;
+use RetailCrm\Api\Model\Entity\Integration\IntegrationModule;
+use RetailCrm\Api\Model\Entity\Integration\Integrations;
+use RetailCrm\Api\Model\Request\Integration\IntegrationModulesEditRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AccountController extends AbstractController
 {
@@ -22,26 +31,71 @@ class AccountController extends AbstractController
     }
 
     #[Route(path: '/register', name: 'account_register', methods: ['GET', 'POST'])]
-    public function register(Request $request, EntityManagerInterface $em): Response
-    {
+    public function register(
+        Request $request,
+        EntityManagerInterface $em,
+    ): Response {
         $accountModel = new AccountModel();
         $form = $this->createForm(AccountType::class, $accountModel);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $account = new Account(
-                (string) $accountModel->url,
-                (string) $accountModel->apiKey
-            );
-            $em->persist($account);
-            $em->flush();
+            assert(null !== $accountModel->url && null !== $accountModel->apiKey);
 
-            return $this->redirectToRoute('account_settings', ['clientId' => $account->getClientId()]);
+            $account = new Account($accountModel->url, $accountModel->apiKey);
+
+            $client = SimpleClientFactory::createClient($accountModel->url, $accountModel->apiKey);
+            try {
+                $client->integration->edit(
+                    $account->getClientId(),
+                    new IntegrationModulesEditRequest(
+                        $this->getIntegrationModuleData($account)
+                    )
+                );
+            } catch (ApiExceptionInterface|ClientExceptionInterface $e) {
+                $form->addError(new FormError(sprintf('Error of module registering: %s', $e->getMessage())));
+            }
+
+            if ($form->isValid()) {
+                $em->persist($account);
+                $em->flush();
+
+                return $this->redirectToRoute('account_settings', ['clientId' => $account->getClientId()]);
+            }
         }
 
         return $this->render('account/register.html.twig', [
             'form' => $form,
         ]);
+    }
+
+    private function getIntegrationModuleData(Account $account): IntegrationModule
+    {
+        $embedJsConfiguration = new EmbedJsConfiguration();
+        $embedJsConfiguration->entrypoint = $this->generateUrl('embed_index');
+        $embedJsConfiguration->stylesheet = $this->generateUrl('embed_static', ['path' => 'booking.css']);
+        $embedJsConfiguration->targets = ['order/card:customer.after'];
+
+        $integrations = new Integrations();
+        $integrations->embedJs = $embedJsConfiguration;
+
+        $integrationModuleData = new IntegrationModule();
+        $integrationModuleData->code = Account::MODULE_CODE;
+        $integrationModuleData->integrationCode = $account->getClientId();
+        $integrationModuleData->active = true;
+        $integrationModuleData->name = 'Booking';
+        $integrationModuleData->clientId = $account->getClientId();
+        $integrationModuleData->baseUrl = $this->generateUrl(
+            'index',
+            referenceType: UrlGeneratorInterface::ABSOLUTE_URL
+        );
+        $integrationModuleData->accountUrl = $this->generateUrl(
+            'account_settings',
+            referenceType: UrlGeneratorInterface::ABSOLUTE_URL
+        );
+        $integrationModuleData->integrations = $integrations;
+
+        return $integrationModuleData;
     }
 
     #[Route(
