@@ -12,13 +12,19 @@ use RetailCrm\Api\Model\Entity\CustomFields\CustomField;
 use RetailCrm\Api\Model\Entity\CustomFields\SerializedCustomDictionaryElement;
 use RetailCrm\Api\Model\Request\CustomFields\CustomDictionaryCreateRequest;
 use RetailCrm\Api\Model\Request\CustomFields\CustomFieldsCreateRequest;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-final class CustomFieldManager
+final readonly class CustomFieldManager
 {
     private const string ENTITY = 'order';
 
     public const string CUSTOM_FIELD_SPECIALIST_CODE = 's_booking_specialist';
     public const string CUSTOM_FIELD_DATETIME_CODE = 's_booking_specialist_datetime';
+
+    public function __construct(
+        private TranslatorInterface $translator,
+    ) {
+    }
 
     /**
      * @param ?Specialist[] $specialists
@@ -51,8 +57,7 @@ final class CustomFieldManager
         $dictionary = new CustomDictionary();
         $dictionary->elements = $dictionaryElements;
         $dictionary->code = self::CUSTOM_FIELD_SPECIALIST_CODE;
-        // @TODO translate
-        $dictionary->name = 'Специалисты';
+        $dictionary->name = $this->translator->trans('specialists');
 
         try {
             $client->customFields->dictionariesGet(self::CUSTOM_FIELD_SPECIALIST_CODE);
@@ -72,11 +77,7 @@ final class CustomFieldManager
         try {
             $specialistField = $client->customFields->get(self::ENTITY, self::CUSTOM_FIELD_SPECIALIST_CODE)->customField;
             $this->updateField($client, $specialistField, [
-                'displayArea' => 'customer',
-                'ordering' => 201,
-                'viewMode' => 'editable',
-                'inFilter' => true,
-                'inList' => true,
+                'name' => $this->translator->trans('specialists'),
             ]);
         } catch (ApiExceptionInterface $e) {
             if (!$this->isNotFoundError($e)) {
@@ -85,8 +86,7 @@ final class CustomFieldManager
 
             $field = new CustomField();
             $field->code = self::CUSTOM_FIELD_SPECIALIST_CODE;
-            // @TODO translate
-            $field->name = 'Специалисты';
+            $field->name = $this->translator->trans('specialists');
             $field->type = 'dictionary';
             $field->dictionary = self::CUSTOM_FIELD_SPECIALIST_CODE;
             $field->entity = 'order';
@@ -106,11 +106,7 @@ final class CustomFieldManager
         try {
             $datetimeField = $client->customFields->get(self::ENTITY, self::CUSTOM_FIELD_DATETIME_CODE)->customField;
             $this->updateField($client, $datetimeField, [
-                'displayArea' => 'customer',
-                'ordering' => 202,
-                'viewMode' => 'editable',
-                'inFilter' => true,
-                'inList' => true,
+                'name' => $this->translator->trans('record_time'),
             ]);
         } catch (ApiExceptionInterface $e) {
             if (!$this->isNotFoundError($e)) {
@@ -119,8 +115,7 @@ final class CustomFieldManager
 
             $field = new CustomField();
             $field->code = self::CUSTOM_FIELD_DATETIME_CODE;
-            // @TODO translate
-            $field->name = 'Время записи';
+            $field->name = $this->translator->trans('record_time');
             $field->type = 'datetime';
             $field->entity = 'order';
             $field->displayArea = 'customer';

@@ -18,7 +18,7 @@ class AccountType extends AbstractType
                 'label' => 'url',
             ])
             ->add('apiKey', TextType::class, [
-                'label' => 'api_key'
+                'label' => 'api_key',
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'save',

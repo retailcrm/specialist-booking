@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>{{ 'for_developers'|trans }}</h2>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">
+            {{ message|trans }}
+        </div>
+    {% endfor %}
+    <form method="POST" action="{{ path('account_settings_for_developers') }}">
+        <button type="submit" class="btn btn-outline-dark">{{ 'sync_settings'|trans }}</button>
+    </form>
+{% endblock %}

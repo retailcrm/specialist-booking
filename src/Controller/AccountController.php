@@ -21,11 +21,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AccountController extends AbstractController
 {
     public function __construct(
         private readonly AccountManager $accountManager,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -110,12 +112,13 @@ class AccountController extends AbstractController
         $integrationModuleData->code = Account::MODULE_CODE;
         $integrationModuleData->integrationCode = $account->getClientId();
         $integrationModuleData->active = true;
-        $integrationModuleData->name = 'Booking';
+        $integrationModuleData->name = $this->translator->trans('booking_name');
         $integrationModuleData->clientId = $account->getClientId();
         $integrationModuleData->baseUrl = $this->generateUrl(
             'index',
             referenceType: UrlGeneratorInterface::ABSOLUTE_URL
         );
+        $integrationModuleData->logo = $integrationModuleData->baseUrl . 'logo.svg';
         $integrationModuleData->accountUrl = $this->generateUrl(
             'account_settings',
             referenceType: UrlGeneratorInterface::ABSOLUTE_URL
@@ -139,5 +142,34 @@ class AccountController extends AbstractController
         return $this->render('account/settings.html.twig', [
             'account' => $this->accountManager->getAccount(),
         ]);
+    }
+
+    #[Route(
+        path: '/settings/for-developers',
+        name: 'account_settings_for_developers',
+        methods: ['GET', 'POST'],
+    )]
+    public function forDevelopers(Request $request): Response
+    {
+        if (!$this->accountManager->hasAccount()) {
+            throw $this->createNotFoundException();
+        }
+        $account = $this->accountManager->getAccount();
+
+        if ($request->isMethod('POST')) {
+            $client = $this->accountManager->getClient();
+            $client->integration->edit(
+                $account->getClientId(),
+                new IntegrationModulesEditRequest(
+                    $this->getIntegrationModuleData($account)
+                )
+            );
+
+            $this->addFlash('success', 'settings_updated');
+
+            return $this->redirectToRoute('account_settings_for_developers');
+        }
+
+        return $this->render('account/developers.html.twig');
     }
 }
