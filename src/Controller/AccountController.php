@@ -5,10 +5,9 @@ namespace App\Controller;
 use App\Entity\Account;
 use App\Form\Model\AccountModel;
 use App\Form\Type\AccountType;
-use App\Service\ClientIdHandler;
+use App\Service\AccountManager;
 use App\Service\CustomFieldManager;
 use Doctrine\ORM\EntityManagerInterface;
-use RetailCrm\Api\Factory\SimpleClientFactory;
 use RetailCrm\Api\Interfaces\ApiExceptionInterface;
 use RetailCrm\Api\Interfaces\ClientExceptionInterface;
 use RetailCrm\Api\Model\Entity\Integration\EmbedJs\EmbedJsConfiguration;
@@ -25,6 +24,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AccountController extends AbstractController
 {
+    public function __construct(
+        private readonly AccountManager $accountManager,
+    ) {
+    }
+
     #[Route(path: '/', name: 'index', methods: ['GET'])]
     public function index(): RedirectResponse
     {
@@ -45,8 +49,8 @@ class AccountController extends AbstractController
             assert(null !== $accountModel->url && null !== $accountModel->apiKey);
 
             $account = new Account($accountModel->url, $accountModel->apiKey);
-
-            $client = SimpleClientFactory::createClient($accountModel->url, $accountModel->apiKey);
+            $this->accountManager->setAccount($account);
+            $client = $this->accountManager->getClient();
 
             // get locale
             try {
@@ -126,15 +130,14 @@ class AccountController extends AbstractController
         name: 'account_settings',
         methods: ['GET', 'POST'],
     )]
-    public function settings(Request $request, ClientIdHandler $clientIdHandler): Response
+    public function settings(): Response
     {
-        $account = $clientIdHandler->getAccount($request);
-        if (!$account) {
+        if (!$this->accountManager->hasAccount()) {
             throw $this->createNotFoundException();
         }
 
         return $this->render('account/settings.html.twig', [
-            'account' => $account,
+            'account' => $this->accountManager->getAccount(),
         ]);
     }
 }

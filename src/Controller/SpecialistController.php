@@ -7,10 +7,9 @@ use App\Form\Model\SpecialistCollectionModel;
 use App\Form\Model\SpecialistModel;
 use App\Form\Type\SpecialistCollectionType;
 use App\Repository\SpecialistRepository;
-use App\Service\ClientIdHandler;
+use App\Service\AccountManager;
 use App\Service\CustomFieldManager;
 use Doctrine\ORM\EntityManagerInterface;
-use RetailCrm\Api\Factory\SimpleClientFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,6 +20,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class SpecialistController extends AbstractController
 {
     public function __construct(
+        private readonly AccountManager $accountManager,
         private readonly EntityManagerInterface $em,
         private readonly SpecialistRepository $specialistRepository,
         private readonly SluggerInterface $slugger,
@@ -32,14 +32,13 @@ class SpecialistController extends AbstractController
     #[Route(path: '/settings/specialists', name: 'specialist_index', methods: ['GET', 'POST'])]
     public function index(
         Request $request,
-        ClientIdHandler $clientIdHandler,
         CustomFieldManager $customFieldManager,
     ): Response {
-        $account = $clientIdHandler->getAccount($request);
-        if (!$account) {
+        if (!$this->accountManager->hasAccount()) {
             throw $this->createNotFoundException();
         }
 
+        $account = $this->accountManager->getAccount();
         $specialists = $this->specialistRepository->findByAccountOrderedByOrdering($account);
         $collectionModel = new SpecialistCollectionModel($specialists);
 
@@ -103,7 +102,7 @@ class SpecialistController extends AbstractController
             $this->em->flush();
 
             // sync with custom fields
-            $client = SimpleClientFactory::createClient($account->getUrl(), $account->getApiKey());
+            $client = $this->accountManager->getClient();
             $specialists = $this->specialistRepository->findByAccountOrderedByOrdering($account);
             $customFieldManager->ensureCustomFields($client, $specialists);
 

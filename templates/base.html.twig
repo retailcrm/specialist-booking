@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}Booking{% endblock %}</title>
+        <link rel="icon" href="{{ asset('logo.svg') }}">
+        <title>{% block title %}{{ 'booking_module'|trans }}{% endblock %}</title>
         {% block stylesheets %}
         {% endblock %}
 
@@ -12,6 +13,16 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <nav class="navbar navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand mb-0 h1" href="{{ path('account_settings') }}">
+                    <img src="{{ asset('logo.svg') }}" alt="" width="26" height="26" class="d-inline-block align-text-top">
+                    {{ 'booking_module'|trans }}
+                </a>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            {% block body %}{% endblock %}
+        </div>
     </body>
 </html>

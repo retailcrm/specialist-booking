@@ -19,20 +19,20 @@ class SpecialistType extends AbstractType
         $builder
             ->add('id', HiddenType::class)
             ->add('name', TextType::class, [
-                'label' => 'Name',
+                'label' => 'name',
                 'required' => true,
             ])
             ->add('position', TextType::class, [
-                'label' => 'Position',
+                'label' => 'position',
                 'required' => false,
             ])
             ->add('ordering', IntegerType::class, [
-                'label' => 'Order',
+                'label' => 'ordering',
                 'required' => true,
                 'attr' => ['min' => 0, 'max' => 999],
             ])
             ->add('photoFile', FileType::class, [
-                'label' => 'Photo',
+                'label' => 'photo',
                 'required' => false,
                 'constraints' => [
                     new Image([

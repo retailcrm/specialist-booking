@@ -14,9 +14,15 @@ class AccountType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('url', TextType::class)
-            ->add('apiKey', TextType::class)
-            ->add('save', SubmitType::class)
+            ->add('url', TextType::class, [
+                'label' => 'url',
+            ])
+            ->add('apiKey', TextType::class, [
+                'label' => 'api_key'
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => 'save',
+            ])
         ;
     }
 

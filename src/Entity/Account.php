@@ -128,7 +128,7 @@ class Account
 
     public function setLocale(?string $locale): static
     {
-        $this->locale = $locale;
+        $this->locale = null === $locale ? null : mb_strtolower($locale);
 
         return $this;
     }

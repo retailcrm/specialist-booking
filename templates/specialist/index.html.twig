@@ -1,52 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Specialists Management{% endblock %}
+{% block title %}{{ 'specialists'|trans }} / {{ parent() }}{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1>Manage Specialists</h1>
+    <h1>{{ 'specialists'|trans }}</h1>
 
-        {{ form_start(form) }}
-        <div class="specialists-collection" 
-             data-prototype="{{ form_widget(form.specialists.vars.prototype)|e('html_attr') }}"
-             data-index="{{ form.specialists|length }}">
-            
-            {% for specialistForm in form.specialists %}
-                <div class="specialist-item">
-                    {{ form_row(specialistForm.id) }}
-                    {{ form_row(specialistForm.name) }}
-                    {{ form_row(specialistForm.position) }}
-                    {{ form_row(specialistForm.ordering) }}
-                    
-                    {% if specialistForm.vars.data.photo %}
-                        <div class="photo-preview">
-                            <img src="{{ asset('uploads/specialists/' ~ specialistForm.vars.data.photo) }}" alt="Specialist photo">
-                        </div>
-                    {% endif %}
-                    
-                    {{ form_row(specialistForm.photoFile) }}
+    {{ form_start(form) }}
+    <div class="specialists-collection"
+         data-prototype="{{ form_widget(form.specialists.vars.prototype)|e('html_attr') }}"
+         data-index="{{ form.specialists|length }}">
 
-                    <button type="button" class="btn btn-outline-danger btn-sm remove-specialist-btn">
-                        Remove specialist
-                    </button>
-                </div>
-            {% endfor %}
-        </div>
+        {% for specialistForm in form.specialists %}
+            <div class="specialist-item">
+                {{ form_row(specialistForm.id) }}
+                {{ form_row(specialistForm.name) }}
+                {{ form_row(specialistForm.position) }}
+                {{ form_row(specialistForm.ordering) }}
 
-        <div class="specialist-buttons-bar">
-            <a href="{{ path('account_settings') }}"><button type="button" class="btn btn-secondary btn-sm">
-                ← Back to settings
-            </button></a>
-            <button type="button" class="btn btn-secondary btn-sm add-specialist-btn">
-                Add specialist
-            </button>
-        </div>
+                {% if specialistForm.vars.data.photo %}
+                    <div class="photo-preview">
+                        <img src="{{ asset('uploads/specialists/' ~ specialistForm.vars.data.photo) }}" alt="{{ 'photo'|trans }}">
+                    </div>
+                {% endif %}
 
-        <div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        </div>
-        {{ form_end(form) }}
+                {{ form_row(specialistForm.photoFile) }}
+
+                <button type="button" class="btn btn-outline-danger btn-sm remove-specialist-btn">
+                    {{ 'remove_specialist'|trans }}
+                </button>
+            </div>
+        {% endfor %}
     </div>
+
+    <div class="specialist-buttons-bar">
+        <a href="{{ path('account_settings') }}"><button type="button" class="btn btn-secondary btn-sm">
+            ← {{ 'back_to_settings'|trans }}
+        </button></a>
+        <button type="button" class="btn btn-secondary btn-sm add-specialist-btn">
+            {{ 'add_specialist'|trans }}
+        </button>
+    </div>
+
+    <div>
+    <button type="submit" class="btn btn-primary">{{ 'save'|trans }}</button>
+    </div>
+    {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
@@ -69,7 +67,7 @@
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
                 removeBtn.className = 'btn btn-outline-danger btn-sm remove-specialist-btn';
-                removeBtn.innerHTML = 'Remove specialist';
+                removeBtn.innerHTML = '{{ 'remove_specialist'|trans }}';
                 specialistItem.append(removeBtn);
                 
                 container.appendChild(specialistItem);
@@ -98,7 +96,7 @@
                         }
 
                         reader.onload = function(e) {
-                            previewContainer.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                            previewContainer.innerHTML = `<img src="${e.target.result}" alt="{{ 'photo'|trans }}">`;
                         };
 
                         reader.readAsDataURL(file);

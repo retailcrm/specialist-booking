@@ -5,10 +5,9 @@ namespace App\Controller;
 use App\Controller\Response\Specialist;
 use App\Controller\Response\SpecialistSlots;
 use App\Repository\SpecialistRepository;
-use App\Service\ClientIdHandler;
+use App\Service\AccountManager;
 use App\Service\SpecialistBusySlotFetcher;
 use App\Service\SpecialistSchedule;
-use RetailCrm\Api\Factory\SimpleClientFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,7 +19,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class EmbedApiController extends AbstractController
 {
     public function __construct(
-        private readonly ClientIdHandler $clientIdHandler,
+        private readonly AccountManager $accountManager,
         private readonly SpecialistRepository $specialistRepository,
         #[Autowire('%specialists_dir%')]
         private readonly string $specialistsUploadDir,
@@ -62,10 +61,10 @@ class EmbedApiController extends AbstractController
         $startDate = $currentDate->setDate((int) $currentDate->format('Y'), (int) $currentDate->format('m'), 1);
         $endDate = $startDate->modify('last day of this month');
 
-        $account = $this->clientIdHandler->getAccount($request, true);
-        if (null === $account) {
+        if (!$this->accountManager->hasAccount()) {
             throw $this->createNotFoundException();
         }
+        $account = $this->accountManager->getAccount();
 
         $specialistId = \App\Entity\Specialist::getIdFromDictionaryElementCode($specialistCode);
         if (null === $specialistId) {
@@ -77,7 +76,7 @@ class EmbedApiController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $client = SimpleClientFactory::createClient($account->getUrl(), $account->getApiKey());
+        $client = $this->accountManager->getClient();
         $busyFetcher = new SpecialistBusySlotFetcher($client);
         $specialistSchedule = new SpecialistSchedule($busyFetcher, new \DateTimeImmutable('now'));
 
@@ -88,20 +87,20 @@ class EmbedApiController extends AbstractController
     }
 
     #[Route(path: '/embed/api/specialists', name: 'embed_api_specialists', methods: ['POST'])]
-    public function specialists(Request $request): JsonResponse
+    public function specialists(): JsonResponse
     {
-        $account = $this->clientIdHandler->getAccount($request, true);
-        if (null === $account) {
+        if (!$this->accountManager->hasAccount()) {
             throw $this->createNotFoundException();
         }
 
+        $account = $this->accountManager->getAccount();
         $baseUrl = sprintf(
             '%s%s',
             rtrim($this->generateUrl('index', [], UrlGeneratorInterface::ABSOLUTE_URL), '/'),
             $this->specialistsUploadDir
         );
 
-        $client = SimpleClientFactory::createClient($account->getUrl(), $account->getApiKey());
+        $client = $this->accountManager->getClient();
         $busyFetcher = new SpecialistBusySlotFetcher($client);
         $specialistSchedule = new SpecialistSchedule($busyFetcher, new \DateTimeImmutable('now'));
 

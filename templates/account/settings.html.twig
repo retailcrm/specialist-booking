@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Account <a href="{{ account.url }}">{{ account.url }}</a></h1>
-    <p>Client ID: <code>{{ account.clientId }}</code></p>
+    <p>
+        {{ 'account'|trans }}: <a href="{{ account.url }}">{{ account.url|trim('/', 'right') }}</a><br />
+        Client ID: <code>{{ account.clientId }}</code>
+    </p>
 
-    <h2>Settings</h2>
+    <h3>{{ 'settings'|trans }}</h3>
     <a href="{{ path('specialist_index') }}">
-        <button type="button" class="btn btn-outline-dark">Specialists</button>
+        <button type="button" class="btn btn-outline-dark">{{ 'specialists'|trans }}</button>
     </a>
 {% endblock %}
