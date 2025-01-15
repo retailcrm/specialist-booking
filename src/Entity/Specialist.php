@@ -8,6 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: SpecialistRepository::class)]
 class Specialist
 {
+    public const string CUSTOM_DICTIONARY_ELEMENT_CODE_PREFIX = 's-';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -37,6 +39,22 @@ class Specialist
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function getDictionaryElementCode(): string
+    {
+        if (null === $this->getId()) {
+            throw new \RuntimeException('Specialist ID is not set');
+        }
+
+        return self::CUSTOM_DICTIONARY_ELEMENT_CODE_PREFIX . $this->getId();
     }
 
     public function getName(): string

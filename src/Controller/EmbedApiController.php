@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Controller\Response\Specialist;
-use App\Entity\Specialist as SpecialistEntity;
 use App\Repository\SpecialistRepository;
 use App\Service\ClientIdHandler;
+use App\Service\SpecialistBusySlotFetcher;
+use App\Service\SpecialistSchedule;
+use RetailCrm\Api\Factory\SimpleClientFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,14 +39,26 @@ class EmbedApiController extends AbstractController
             $this->specialistsUploadDir
         );
 
+        $client = SimpleClientFactory::createClient($account->getUrl(), $account->getApiKey());
+        $busyFetcher = new SpecialistBusySlotFetcher($client);
+        $specialistSchedule = new SpecialistSchedule($busyFetcher, new \DateTimeImmutable('now'));
+
         $specialists = $this->specialistRepository->findByAccountOrderedByOrdering($account);
-        $list = array_map(
-            static fn (SpecialistEntity $specialist): Specialist => Specialist::fromEntity($specialist, $baseUrl),
-            $specialists
-        );
+        $specialistSlots = $specialistSchedule->getNearestDaySchedule($specialists);
 
-        // @TODO fill slots
+        $availableSpecialists = [];
+        foreach ($specialists as $specialist) {
+            if (!isset($specialistSlots[(int) $specialist->getId()])) {
+                continue;
+            }
 
-        return $this->json(['specialists' => $list]);
+            $availableSpecialists[] = Specialist::fromEntity(
+                $specialist,
+                $specialistSlots[(int) $specialist->getId()],
+                $baseUrl
+            );
+        }
+
+        return $this->json(['specialists' => $availableSpecialists]);
     }
 }

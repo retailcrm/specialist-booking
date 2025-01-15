@@ -9,7 +9,6 @@
                 <UiAvatar
                     :src="specialist.photo"
                     :size="'lg'"
-                    :class="$style.photo"
                     :name="specialist.name"
                 />
                 <div :class="$style.details">
