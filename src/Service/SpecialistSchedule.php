@@ -50,7 +50,7 @@ final readonly class SpecialistSchedule
             $startDate = clone $this->now;
         }
 
-        $endDate = $endDate->setTime(0, 0)->modify('+1 day');
+        $endDate = $endDate->setTime(23, 59);
 
         return $this->getAvailableSlots($specialist, $startDate, $endDate, false);
     }
