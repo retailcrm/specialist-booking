@@ -11,6 +11,15 @@ use RetailCrm\Api\Model\Request\Orders\OrdersRequest;
 final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterface
 {
     private const int LIMIT = 50;
+    private const array WEEKDAY_MAP = [
+        'Monday' => 1,
+        'Tuesday' => 2,
+        'Wednesday' => 3,
+        'Thursday' => 4,
+        'Friday' => 5,
+        'Saturday' => 6,
+        'Sunday' => 7,
+    ];
 
     public function __construct(
         private Client $client,
@@ -74,12 +83,26 @@ final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetc
 
     public function getCompanyWorkingTime(): array
     {
-        return [
-            1 => [['09:00', '20:00']],
-            2 => [['09:00', '20:00']],
-            3 => [['09:00', '20:00']],
-            4 => [['09:00', '20:00']],
-            5 => [['09:00', '20:00']],
-        ];
+        // @TODO caching
+        $systemWorkTimes = $this->client->settings->get()->settings->workTimes;
+        $workTimes = [];
+
+        foreach ($systemWorkTimes as $systemWorkTime) {
+            $day = self::WEEKDAY_MAP[$systemWorkTime->dayType] ?? null;
+            if (null === $day) {
+                continue;
+            }
+
+            if ($systemWorkTime->lunchStartTime && $systemWorkTime->lunchEndTime) {
+                $workTimes[$day] = [
+                    [$systemWorkTime->startTime, $systemWorkTime->lunchStartTime],
+                    [$systemWorkTime->lunchEndTime, $systemWorkTime->endTime],
+                ];
+            } else {
+                $workTimes[$day] = [[$systemWorkTime->startTime, $systemWorkTime->endTime]];
+            }
+        }
+
+        return $workTimes;
     }
 }
