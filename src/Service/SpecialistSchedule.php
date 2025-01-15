@@ -78,10 +78,11 @@ final readonly class SpecialistSchedule
     ): array {
         $workingTime = $this->busySlotFetcher->getCompanyWorkingTime();
         $busySlots = $this->busySlotFetcher->fetch($specialist, $startDate, $endDate);
-        $busySlotsMap = [];
+        $nonWorkingDays = $this->busySlotFetcher->getNonWorkingDays();
         $result = [];
 
         // Create a map of busy slots by date for faster lookup
+        $busySlotsMap = [];
         foreach ($busySlots as $daySlots) {
             $busySlotsMap[$daySlots->getDate()] = $daySlots->getSlots();
         }
@@ -95,6 +96,22 @@ final readonly class SpecialistSchedule
             if (!isset($workingTime[$dayOfWeek])) {
                 $currentDate = $currentDate->modify('+1 day');
                 continue;
+            }
+
+            foreach ($nonWorkingDays as [$startString, $endString]) {
+                $nonWorkingStart = \DateTimeImmutable::createFromFormat('Y.m.d', $currentDate->format('Y.') . $startString);
+                $nonWorkingEnd = \DateTimeImmutable::createFromFormat('Y.m.d', $currentDate->format('Y.') . $endString);
+                if (false === $nonWorkingStart || false === $nonWorkingEnd) {
+                    continue;
+                }
+
+                $nonWorkingStart = $nonWorkingStart->setTime(0, 0);
+                $nonWorkingEnd = $nonWorkingEnd->setTime(0, 0)->modify('+1 day');
+
+                if ($currentDate >= $nonWorkingStart && $currentDate < $nonWorkingEnd) {
+                    $currentDate = $currentDate->modify('+1 day');
+                    continue 2;
+                }
             }
 
             $availableSlots = [];

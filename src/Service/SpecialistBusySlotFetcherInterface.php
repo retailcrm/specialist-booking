@@ -19,4 +19,9 @@ interface SpecialistBusySlotFetcherInterface
      * @return array<int, array<array{string, string}>>
      */
     public function getCompanyWorkingTime(): array;
+
+    /**
+     * @return array<array{string, string}> in format {'mm.dd', 'mm.dd'}
+     */
+    public function getNonWorkingDays(): array;
 }

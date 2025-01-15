@@ -5,10 +5,11 @@ namespace App\Service;
 use App\Entity\Specialist;
 use App\Service\DTO\DaySlots;
 use RetailCrm\Api\Client;
+use RetailCrm\Api\Model\Entity\Settings\Settings;
 use RetailCrm\Api\Model\Filter\Orders\OrderFilter;
 use RetailCrm\Api\Model\Request\Orders\OrdersRequest;
 
-final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterface
+final class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterface
 {
     private const int LIMIT = 50;
     private const array WEEKDAY_MAP = [
@@ -21,8 +22,10 @@ final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetc
         'Sunday' => 7,
     ];
 
+    private ?Settings $settings = null;
+
     public function __construct(
-        private Client $client,
+        private readonly Client $client,
     ) {
     }
 
@@ -84,7 +87,7 @@ final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetc
     public function getCompanyWorkingTime(): array
     {
         // @TODO caching
-        $systemWorkTimes = $this->client->settings->get()->settings->workTimes;
+        $systemWorkTimes = $this->getSettings()->workTimes;
         $workTimes = [];
 
         foreach ($systemWorkTimes as $systemWorkTime) {
@@ -104,5 +107,27 @@ final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetc
         }
 
         return $workTimes;
+    }
+
+    public function getNonWorkingDays(): array
+    {
+        $systemDays = $this->getSettings()->nonWorkingDays;
+        $result = [];
+
+        foreach ($systemDays as $systemDay) {
+            $result[] = [$systemDay->startDate, $systemDay->endDate];
+        }
+
+        return $result;
+    }
+
+    private function getSettings(): Settings
+    {
+        if (null === $this->settings) {
+            // @TODO caching
+            $this->settings = $this->client->settings->get()->settings;
+        }
+
+        return $this->settings;
     }
 }

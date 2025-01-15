@@ -41,11 +41,18 @@ class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterface
     public function getCompanyWorkingTime(): array
     {
         return [
-            1 => [['09:00', '13:00'], ['14:00', '18:00']],
+            1 => [['09:00', '13:00'], ['14:00', '17:00']],
             2 => [['09:00', '13:00'], ['14:00', '18:00']],
             3 => [['09:00', '13:00'], ['14:00', '18:00']],
             4 => [['09:00', '13:00'], ['14:00', '18:00']],
             5 => [['09:00', '13:00'], ['14:00', '17:00']],
+        ];
+    }
+
+    public function getNonWorkingDays(): array
+    {
+        return [
+            ['01.17', '01.17'],
         ];
     }
 }

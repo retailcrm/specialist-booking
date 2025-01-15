@@ -62,7 +62,7 @@ class SpecialistScheduleTest extends TestCase
         $this->assertArrayHasKey(3, $result);
         $specialist3Slots = $result[3];
         $this->assertInstanceOf(DaySlots::class, $specialist3Slots);
-        $this->assertEquals('2025-01-17', $specialist3Slots->getDate());
+        $this->assertEquals('2025-01-20', $specialist3Slots->getDate());
         $this->assertSame(
             ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00'],
             array_map(
@@ -85,7 +85,7 @@ class SpecialistScheduleTest extends TestCase
         $specialist->setId(1);
 
         $startDate = new \DateTimeImmutable('2025-01-16');
-        $endDate = new \DateTimeImmutable('2025-01-17');
+        $endDate = new \DateTimeImmutable('2025-01-20');
 
         // Act
         $result = $schedule->getSpecialistSlots($specialist, $startDate, $endDate);
@@ -105,10 +105,10 @@ class SpecialistScheduleTest extends TestCase
             )
         );
 
-        // Check second day slots (2025-01-17)
+        // Check second day slots (2025-01-20)
         $secondDaySlots = $result[1];
         $this->assertInstanceOf(DaySlots::class, $secondDaySlots);
-        $this->assertEquals('2025-01-17', $secondDaySlots->getDate());
+        $this->assertEquals('2025-01-20', $secondDaySlots->getDate());
         $this->assertSame(
             ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00'],
             array_map(
