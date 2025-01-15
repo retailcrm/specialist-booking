@@ -57,6 +57,15 @@ class Specialist
         return self::CUSTOM_DICTIONARY_ELEMENT_CODE_PREFIX . $this->getId();
     }
 
+    public static function getIdFromDictionaryElementCode(string $code): ?int
+    {
+        if (!preg_match('/^' . preg_quote(self::CUSTOM_DICTIONARY_ELEMENT_CODE_PREFIX, '/') . '(\d+)$/', $code, $matches)) {
+            return null;
+        }
+
+        return (int) $matches[1];
+    }
+
     public function getName(): string
     {
         return $this->name;

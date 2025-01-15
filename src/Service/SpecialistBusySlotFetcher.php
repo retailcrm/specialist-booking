@@ -75,11 +75,11 @@ final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetc
     public function getCompanyWorkingTime(): array
     {
         return [
-            1 => [['09:00', '19:00']],
-            2 => [['09:00', '19:00']],
-            3 => [['09:00', '19:00']],
-            4 => [['09:00', '19:00']],
-            5 => [['09:00', '19:00']],
+            1 => [['09:00', '20:00']],
+            2 => [['09:00', '20:00']],
+            3 => [['09:00', '20:00']],
+            4 => [['09:00', '20:00']],
+            5 => [['09:00', '20:00']],
         ];
     }
 }

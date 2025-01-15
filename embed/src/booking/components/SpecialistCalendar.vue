@@ -55,14 +55,14 @@
 
         <div v-if="selectedDate" :class="$style.time_slots">
             <div :class="$style.date_header">
-                {{ formatDate(selectedDate) }}
+                {{ selectedDate && formatDate(selectedDate) }}
             </div>
             <div :class="$style.slots">
                 <UiButton
-                    v-for="slot in availableSlots[formatDateKey(selectedDate)]"
+                    v-for="slot in (selectedDate ? availableSlots[formatDateKey(selectedDate)] : [])"
                     :key="slot"
                     appearance="outlined"
-                    @click="$emit('select-slot', formatDateKey(selectedDate), slot)"
+                    @click="$emit('select-slot', formatDateKey(selectedDate!), slot)"
                 >
                     {{ slot }}
                 </UiButton>
@@ -76,7 +76,8 @@ import IconBack from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/ar
 import IconPrev from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/chevron-right.svg'
 import IconNext from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/chevron-right.svg'
 import { UiButton, UiAvatar } from '@retailcrm/embed-ui-v1-components/remote'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useHost } from '@retailcrm/embed-ui'
 import {
     startOfMonth,
     endOfMonth,
@@ -93,15 +94,18 @@ import type { Specialist } from '../types'
 
 const props = defineProps<{
     specialist: Specialist
-    availableSlots: Record<string, string[]>
     t: (key: string) => string
     locale: string
 }>()
 
 defineEmits<{
     (e: 'back'): void
-    (e: 'select-slot', specialistId: string, date: string, time: string): void
+    (e: 'select-slot', date: string, time: string): void
 }>()
+
+const host = useHost()
+
+const availableSlots = ref<Record<string, string[]>>({})
 
 const currentDate = ref(new Date())
 const selectedDate = ref<Date | null>(null)
@@ -112,12 +116,21 @@ const locales = {
     'ru-RU': ru,
 }
 
+const loadSlots = async () => {
+    const { body, status } = await host.httpCall(`/embed/api/specialists/${props.specialist.id}/slots`, {
+        current_date: formatDateKey(currentDate.value),
+    })
+    if (status === 200) {
+        availableSlots.value = JSON.parse(body).slots as Record<string, string[]>
+    }
+}
+
 const weekDays = computed(() => {
     const days = []
-    const date = startOfWeek(new Date())
+    const date = startOfWeek(new Date(), { weekStartsOn: 1 })
     
     for (let i = 0; i < 7; i++) {
-        days.push(format(addDays(date, i), 'EE', {
+        days.push(format(addDays(date, i), 'EEEEEE', {
             locale: locales[props.locale as keyof typeof locales],
         }))
     }
@@ -126,13 +139,13 @@ const weekDays = computed(() => {
 })
 
 const calendarDays = computed(() => {
-    const start = startOfWeek(startOfMonth(currentDate.value))
-    const end = endOfWeek(endOfMonth(currentDate.value))
+    const start = startOfWeek(startOfMonth(currentDate.value), { weekStartsOn: 1 })
+    const end = endOfWeek(endOfMonth(currentDate.value), { weekStartsOn: 1 })
   
     return eachDayOfInterval({ start, end }).map(date => ({
         date,
         isCurrentMonth: date.getMonth() === currentDate.value.getMonth(),
-        isAvailable: props.availableSlots[formatDateKey(date)]?.length > 0,
+        isAvailable: availableSlots.value[formatDateKey(date)]?.length > 0,
     }))
 })
 
@@ -150,19 +163,25 @@ const formatDate = (date: Date) => format(date, 'EEEE, d MMMM', {
 
 const formatDateKey = (date: Date) => format(date, 'yyyy-MM-dd')
 
-const previousMonth = () => {
+const previousMonth = async () => {
     currentDate.value = subMonths(currentDate.value, 1)
     selectedDate.value = null
+    await loadSlots()
 }
 
-const nextMonth = () => {
+const nextMonth = async () => {
     currentDate.value = addMonths(currentDate.value, 1)
     selectedDate.value = null
+    await loadSlots()
 }
 
 const selectDate = (date: Date) => {
     selectedDate.value = date
 }
+
+onMounted(async () => {
+    await loadSlots()
+})
 </script>
 
 <style lang="less" module>

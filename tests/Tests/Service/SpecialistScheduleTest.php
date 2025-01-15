@@ -71,4 +71,50 @@ class SpecialistScheduleTest extends TestCase
             )
         );
     }
+
+    public function testGetSpecialistSlots(): void
+    {
+        // Arrange
+        $now = new \DateTimeImmutable('2025-01-16 14:00:00');
+        $schedule = new SpecialistSchedule(
+            new SpecialistBusySlotFetcher(),
+            $now
+        );
+
+        $specialist = new Specialist('John Doe');
+        $specialist->setId(1);
+
+        $startDate = new \DateTimeImmutable('2025-01-16');
+        $endDate = new \DateTimeImmutable('2025-01-17');
+
+        // Act
+        $result = $schedule->getSpecialistSlots($specialist, $startDate, $endDate);
+
+        // Assert
+        $this->assertCount(2, $result);
+
+        // Check first day slots (2025-01-16)
+        $firstDaySlots = $result[0];
+        $this->assertInstanceOf(DaySlots::class, $firstDaySlots);
+        $this->assertEquals('2025-01-16', $firstDaySlots->getDate());
+        $this->assertSame(
+            ['16:00', '17:00'],
+            array_map(
+                fn (\DateTimeImmutable $slot) => $slot->format('H:i'),
+                $firstDaySlots->getSlots()
+            )
+        );
+
+        // Check second day slots (2025-01-17)
+        $secondDaySlots = $result[1];
+        $this->assertInstanceOf(DaySlots::class, $secondDaySlots);
+        $this->assertEquals('2025-01-17', $secondDaySlots->getDate());
+        $this->assertSame(
+            ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00'],
+            array_map(
+                fn (\DateTimeImmutable $slot) => $slot->format('H:i'),
+                $secondDaySlots->getSlots()
+            )
+        );
+    }
 }

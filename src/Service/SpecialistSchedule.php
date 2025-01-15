@@ -26,7 +26,7 @@ final readonly class SpecialistSchedule
     public function getNearestDaySchedule(array $specialists): array
     {
         $result = [];
-        $endDate = $this->now->modify('+7 days');
+        $endDate = $this->now->modify('+14 days');
 
         foreach ($specialists as $specialist) {
             $daySlots = $this->getSpecialistNearestDaySlots($specialist, $this->now, $endDate);
@@ -38,22 +38,55 @@ final readonly class SpecialistSchedule
         return $result;
     }
 
+    /**
+     * Return available time slots for specialist in given date range
+     *
+     * @return DaySlots[]
+     */
+    public function getSpecialistSlots(Specialist $specialist, \DateTimeImmutable $startDate, \DateTimeImmutable $endDate): array
+    {
+        $startDate = $startDate->setTime(0, 0);
+        if ($startDate < $this->now) {
+            $startDate = clone $this->now;
+        }
+
+        $endDate = $endDate->setTime(0, 0)->modify('+1 day');
+
+        return $this->getAvailableSlots($specialist, $startDate, $endDate, false);
+    }
+
     private function getSpecialistNearestDaySlots(
         Specialist $specialist,
         \DateTimeImmutable $startDate,
         \DateTimeImmutable $endDate,
     ): ?DaySlots {
-        $workingTime = $this->busySlotFetcher->getCompanyWorkingTime();
+        $slots = $this->getAvailableSlots($specialist, $startDate, $endDate, true);
 
+        return $slots[0] ?? null;
+    }
+
+    /**
+     * Get available slots for a specialist in the given date range
+     *
+     * @return DaySlots[]
+     */
+    private function getAvailableSlots(
+        Specialist $specialist,
+        \DateTimeImmutable $startDate,
+        \DateTimeImmutable $endDate,
+        bool $stopOnFirstDay = false,
+    ): array {
+        $workingTime = $this->busySlotFetcher->getCompanyWorkingTime();
         $busySlots = $this->busySlotFetcher->fetch($specialist, $startDate, $endDate);
         $busySlotsMap = [];
+        $result = [];
 
         // Create a map of busy slots by date for faster lookup
         foreach ($busySlots as $daySlots) {
             $busySlotsMap[$daySlots->getDate()] = $daySlots->getSlots();
         }
 
-        // Check each day until we find one with available slots
+        // Check each day in the range
         $currentDate = $startDate;
         while ($currentDate <= $endDate) {
             $dayOfWeek = (int) $currentDate->format('N'); // 1 (Monday) to 7 (Sunday)
@@ -130,17 +163,21 @@ final readonly class SpecialistSchedule
                 );
             }
 
-            // If we found available slots, return them
+            // If we found available slots, add them to result
             if (!empty($availableSlots)) {
-                return new DaySlots(
+                $result[] = new DaySlots(
                     $dateKey,
                     array_values($availableSlots)
                 );
+
+                if ($stopOnFirstDay) {
+                    break;
+                }
             }
 
             $currentDate = $currentDate->modify('+1 day');
         }
 
-        return null;
+        return $result;
     }
 }

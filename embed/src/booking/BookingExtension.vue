@@ -35,7 +35,6 @@
                 <SpecialistCalendar
                     v-else
                     :specialist="selectedSpecialist"
-                    :available-slots="availableSlots"
                     :t="t"
                     :locale="locale"
                     @select-slot="handleSlotSelect"
@@ -77,13 +76,6 @@ watch(locale, locale => i18n.locale.value = locale, { immediate: true })
 const showBookingSidebar = ref(false)
 const currentView = ref<'specialists' | 'calendar'>('specialists')
 const selectedSpecialist = ref<Specialist | null>(null)
-
-// Mock data for available slots
-const availableSlots = ref<Record<string, string[]>>({
-    '2025-01-16': ['11:00', '12:00', '13:00', '14:00', '15:00'],
-    '2025-01-17': ['10:00', '11:00', '14:00', '15:00'],
-    '2025-01-18': ['11:00', '13:00'],
-})
 
 const host = useHost()
 
@@ -133,7 +125,7 @@ const handleSlotSelect = (date: string, time: string) => {
 }
 
 const setToCustomFields = (date: string, time: string) => {
-    customFieldSpecialist.value = selectedSpecialist.value.id
+    customFieldSpecialist.value = selectedSpecialist.value?.id || null
     customFieldDateTime.value = new Date(`${date}T${time}`).toISOString()
 }
 </script>

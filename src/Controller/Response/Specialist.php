@@ -4,14 +4,14 @@ namespace App\Controller\Response;
 
 use App\Service\DTO\DaySlots;
 
-class Specialist implements \JsonSerializable
+final readonly class Specialist implements \JsonSerializable
 {
     public function __construct(
-        private readonly string $id,
-        private readonly string $name,
-        private readonly ?string $position,
-        private readonly ?string $photo,
-        private readonly DaySlots $nearestSlots,
+        private string $id,
+        private string $name,
+        private ?string $position,
+        private ?string $photo,
+        private DaySlots $nearestSlots,
     ) {
     }
 
