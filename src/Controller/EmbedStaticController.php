@@ -22,9 +22,11 @@ class EmbedStaticController extends AbstractController
         $this->embedDir = $embedDir . self::EMBED_JS_PATH;
     }
 
-    public function staticFile(Profiler $profiler, string $path): BinaryFileResponse
+    public function staticFile(string $path, ?Profiler $profiler): BinaryFileResponse
     {
-        $profiler->disable();
+        if ($profiler) {
+            $profiler->disable();
+        }
 
         $manifest = $this->getManifest();
         if ($manifest instanceof NotFoundHttpException) {

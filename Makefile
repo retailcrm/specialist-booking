@@ -46,6 +46,8 @@ RECTOR_CMD=vendor/bin/rector process
 
 rector: $(PHP_CONSOLE_DEPS)
 	@$(PHP) $(RECTOR_CMD)
+rector-gitlab:
+	@$(PHP) $(RECTOR_CMD) --dry-run --no-progress-bar
 
 check: php-cs phpstan rector
 

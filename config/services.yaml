@@ -20,5 +20,3 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
-    Symfony\Component\HttpKernel\Profiler\Profiler: '@profiler'
