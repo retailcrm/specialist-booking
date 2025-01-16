@@ -20,6 +20,10 @@ body {
     max-width: 100%;
     height: auto;
 }
-.specialist-buttons-bar {
+.buttons-bar {
     margin-bottom: 20px;
+}
+
+.section {
+    margin-top: .5rem;
 }

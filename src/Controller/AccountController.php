@@ -95,7 +95,7 @@ class AccountController extends AbstractController
                 $em->persist($account);
                 $em->flush();
 
-                return $this->redirectToRoute('account_settings', ['clientId' => $account->getClientId()]);
+                return $this->redirectToRoute('account_settings_index', ['clientId' => $account->getClientId()]);
             }
         }
 
@@ -126,7 +126,7 @@ class AccountController extends AbstractController
         );
         $integrationModuleData->logo = $integrationModuleData->baseUrl . 'logo.svg';
         $integrationModuleData->accountUrl = $this->generateUrl(
-            'account_settings',
+            'account_settings_index',
             referenceType: UrlGeneratorInterface::ABSOLUTE_URL
         );
         $integrationModuleData->actions = [
@@ -206,22 +206,6 @@ class AccountController extends AbstractController
         $em->flush();
 
         return new JsonResponse(['success' => true]);
-    }
-
-    #[Route(
-        path: '/settings',
-        name: 'account_settings',
-        methods: ['GET', 'POST'],
-    )]
-    public function settings(): Response
-    {
-        if (!$this->accountManager->hasAccount()) {
-            throw $this->createNotFoundException();
-        }
-
-        return $this->render('account/settings.html.twig', [
-            'account' => $this->accountManager->getAccount(),
-        ]);
     }
 
     #[Route(

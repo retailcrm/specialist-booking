@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
+{# @var account \App\Entity\Account #}
+
 {% block body %}
     <dl class="row">
         <dt class="col-sm-2">{{ 'account'|trans }}</dt>
-        <dd class="col-sm-10"><a href="{{ account.url }}">{{ account.url|trim('/', 'right') }}</a></dd>
+        <dd class="col-sm-10"><a href="{{ publicUrl }}">{{ publicUrl|trim('/', 'right') }}</a></dd>
 
         <dt class="col-sm-2">Client ID</dt>
         <dd class="col-sm-10"><code>{{ account.clientId }}</code></dd>
@@ -28,7 +30,6 @@
     </dl>
 
     <h3>{{ 'settings'|trans }}</h3>
-    <a href="{{ path('specialist_index') }}">
-        <button type="button" class="btn btn-outline-dark">{{ 'specialists'|trans }}</button>
-    </a>
+    <a href="{{ path('specialist_index') }}"><button type="button" class="btn btn-outline-dark">{{ 'specialists'|trans }}</button></a>
+    <a href="{{ path('account_settings_working_time') }}"><button type="button" class="btn btn-outline-dark">{{ 'working_time'|trans }}</button></a>
 {% endblock %}

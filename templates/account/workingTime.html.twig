@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>{{ 'module_settings'|trans }}</h3>
+
+    <h4 class="section">{{ 'time_slot_length'|trans }}</h4>
+    {{ form(timeSlotForm) }}
+
+    <h3>{{ 'settings_from_account'|trans }}</h3>
+    <div class="card">
+        <div class="card-body">
+            {{ 'info_about_working_time_from_account'|trans({ '%public_url%': publicUrl })|raw }}
+        </div>
+    </div>
+
+    <h4 class="section">{{ 'working_time'|trans }}</h4>
+    {% if account.settings.workTimes %}
+    <dl class="row">
+        {% for day, times in account.settings.workTimes %}
+        <dt class="col-sm-2">{{ ('day_' ~ day)|trans }}</dt>
+        <dd class="col-sm-10">
+            {% for time in times %}
+                {{ time[0] }} – {{ time[1] }}{{ not loop.last ? ', ' : '' }}
+            {% endfor %}
+        </dd>
+        {% endfor %}
+    </dl>
+    {% else %}
+        <p>{{ 'working_time_not_set'|trans }}</p>>
+    {% endif %}
+
+    <h4 class="section">{{ 'non_working_days'|trans }}</h4>
+    {% if account.settings.nonWorkingDays %}
+        <p>
+            {% for days in account.settings.nonWorkingDays %}
+                {{ days[0] == days[1] ? days[0] : days[0] ~ ' – ' ~ days[1] }}{{ not loop.last ? ', ' : '' }}
+            {% endfor %}
+        </p>
+    {% else %}
+        <p>{{ 'non_working_days_not_set'|trans }}</p>>
+    {% endif %}
+
+    <div class="buttons-bar">
+        <a href="{{ path('account_settings_index') }}"><button type="button" class="btn btn-secondary btn-sm">
+                ← {{ 'back_to_settings'|trans }}
+            </button></a>
+    </div>
+{% endblock %}
