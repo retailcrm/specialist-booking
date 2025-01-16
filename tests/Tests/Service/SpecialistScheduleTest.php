@@ -14,10 +14,7 @@ class SpecialistScheduleTest extends TestCase
     {
         // Arrange
         $now = new \DateTimeImmutable('2025-01-16 14:00:00');
-        $schedule = new SpecialistSchedule(
-            new SpecialistBusySlotFetcher(),
-            $now
-        );
+        $schedule = new SpecialistSchedule(new SpecialistBusySlotFetcher());
 
         // Create test specialists
         $specialist1 = new Specialist('John Doe');
@@ -29,7 +26,7 @@ class SpecialistScheduleTest extends TestCase
         $specialist3 = new Specialist('Jane Smith 3');
         $specialist3->setId(3);
 
-        $result = $schedule->getNearestDaySchedule([$specialist1, $specialist2, $specialist3]);
+        $result = $schedule->getNearestDaySchedule([$specialist1, $specialist2, $specialist3], $now);
         $this->assertCount(3, $result);
 
         // Check specialist 1 slots
@@ -76,10 +73,7 @@ class SpecialistScheduleTest extends TestCase
     {
         // Arrange
         $now = new \DateTimeImmutable('2025-01-16 14:00:00');
-        $schedule = new SpecialistSchedule(
-            new SpecialistBusySlotFetcher(),
-            $now
-        );
+        $schedule = new SpecialistSchedule(new SpecialistBusySlotFetcher());
 
         $specialist = new Specialist('John Doe');
         $specialist->setId(1);
@@ -88,7 +82,7 @@ class SpecialistScheduleTest extends TestCase
         $endDate = new \DateTimeImmutable('2025-01-20');
 
         // Act
-        $result = $schedule->getSpecialistSlots($specialist, $startDate, $endDate);
+        $result = $schedule->getSpecialistSlots($specialist, $startDate, $endDate, $now);
 
         // Assert
         $this->assertCount(2, $result);

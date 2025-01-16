@@ -34,7 +34,7 @@ final readonly class AccountListener implements EventSubscriberInterface
         }
 
         $this->accountManager->setAccount($account);
-        $request->setLocale($account->getRequiredLocale());
+        $request->setLocale($account->getSettings()->getRequiredLocale());
     }
 
     private function getClientId(Request $request): string

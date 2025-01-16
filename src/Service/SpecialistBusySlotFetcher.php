@@ -2,35 +2,27 @@
 
 namespace App\Service;
 
+use App\Entity\AccountSettings;
 use App\Entity\Specialist;
 use App\Service\DTO\DaySlots;
-use RetailCrm\Api\Client;
-use RetailCrm\Api\Model\Entity\Settings\Settings;
+use Doctrine\ORM\EntityManagerInterface;
 use RetailCrm\Api\Model\Filter\Orders\OrderFilter;
 use RetailCrm\Api\Model\Request\Orders\OrdersRequest;
 
-final class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterface
+final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterface
 {
     private const int LIMIT = 50;
-    private const array WEEKDAY_MAP = [
-        'Monday' => 1,
-        'Tuesday' => 2,
-        'Wednesday' => 3,
-        'Thursday' => 4,
-        'Friday' => 5,
-        'Saturday' => 6,
-        'Sunday' => 7,
-    ];
-
-    private ?Settings $settings = null;
 
     public function __construct(
-        private readonly Client $client,
+        private EntityManagerInterface $em,
+        private AccountManager $accountManager,
     ) {
     }
 
     public function fetch(Specialist $specialist, \DateTimeImmutable $startDate, \DateTimeImmutable $endingDate): array
     {
+        $client = $this->accountManager->getClient();
+
         $filter = new OrderFilter();
         $filter->customFields = [
             CustomFieldManager::CUSTOM_FIELD_SPECIALIST_CODE => [$specialist->getDictionaryElementCode()],
@@ -47,7 +39,7 @@ final class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterf
 
         $dates = [];
         do {
-            $orders = $this->client->orders->list($request);
+            $orders = $client->orders->list($request);
             foreach ($orders->orders as $order) {
                 $specialistCode = $order->customFields[CustomFieldManager::CUSTOM_FIELD_SPECIALIST_CODE] ?? null;
                 // на всякий проверяем
@@ -86,24 +78,12 @@ final class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterf
 
     public function getCompanyWorkingTime(): array
     {
-        // @TODO caching
-        $systemWorkTimes = $this->getSettings()->workTimes;
-        $workTimes = [];
+        $settings = $this->getSettings();
+        $workTimes = $settings->getWorkTimes();
 
-        foreach ($systemWorkTimes as $systemWorkTime) {
-            $day = self::WEEKDAY_MAP[$systemWorkTime->dayType] ?? null;
-            if (null === $day) {
-                continue;
-            }
-
-            if ($systemWorkTime->lunchStartTime && $systemWorkTime->lunchEndTime) {
-                $workTimes[$day] = [
-                    [$systemWorkTime->startTime, $systemWorkTime->lunchStartTime],
-                    [$systemWorkTime->lunchEndTime, $systemWorkTime->endTime],
-                ];
-            } else {
-                $workTimes[$day] = [[$systemWorkTime->startTime, $systemWorkTime->endTime]];
-            }
+        if (null === $workTimes) {
+            $this->updateSettings();
+            $workTimes = $settings->getWorkTimes() ?? [];
         }
 
         return $workTimes;
@@ -111,23 +91,30 @@ final class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterf
 
     public function getNonWorkingDays(): array
     {
-        $systemDays = $this->getSettings()->nonWorkingDays;
-        $result = [];
+        $settings = $this->getSettings();
+        $nonWorkingDays = $settings->getNonWorkingDays();
 
-        foreach ($systemDays as $systemDay) {
-            $result[] = [$systemDay->startDate, $systemDay->endDate];
+        if (null === $nonWorkingDays) {
+            $this->updateSettings();
+            $nonWorkingDays = $settings->getNonWorkingDays() ?? [];
         }
 
-        return $result;
+        return $nonWorkingDays;
     }
 
-    private function getSettings(): Settings
+    private function updateSettings(): void
     {
-        if (null === $this->settings) {
-            // @TODO caching
-            $this->settings = $this->client->settings->get()->settings;
-        }
+        $crmSettings = $this->accountManager->getClient()->settings->get()->settings;
 
-        return $this->settings;
+        $this->getSettings()->setFromCrmSettings($crmSettings);
+        $this->em->flush();
+    }
+
+    private function getSettings(): AccountSettings
+    {
+        return $this->accountManager
+            ->getAccount()
+            ->getSettings()
+        ;
     }
 }

@@ -11,7 +11,6 @@ final readonly class SpecialistSchedule
 
     public function __construct(
         private SpecialistBusySlotFetcherInterface $busySlotFetcher,
-        private \DateTimeImmutable $now,
     ) {
     }
 
@@ -23,13 +22,13 @@ final readonly class SpecialistSchedule
      *
      * @return array<int, DaySlots> - specialist id as key
      */
-    public function getNearestDaySchedule(array $specialists): array
+    public function getNearestDaySchedule(array $specialists, \DateTimeImmutable $now): array
     {
         $result = [];
-        $endDate = $this->now->modify('+14 days');
+        $endDate = $now->modify('+14 days');
 
         foreach ($specialists as $specialist) {
-            $daySlots = $this->getSpecialistNearestDaySlots($specialist, $this->now, $endDate);
+            $daySlots = $this->getSpecialistNearestDaySlots($specialist, $now, $endDate, $now);
             if (null !== $daySlots) {
                 $result[(int) $specialist->getId()] = $daySlots;
             }
@@ -43,24 +42,29 @@ final readonly class SpecialistSchedule
      *
      * @return DaySlots[]
      */
-    public function getSpecialistSlots(Specialist $specialist, \DateTimeImmutable $startDate, \DateTimeImmutable $endDate): array
-    {
+    public function getSpecialistSlots(
+        Specialist $specialist,
+        \DateTimeImmutable $startDate,
+        \DateTimeImmutable $endDate,
+        \DateTimeImmutable $now,
+    ): array {
         $startDate = $startDate->setTime(0, 0);
-        if ($startDate < $this->now) {
-            $startDate = clone $this->now;
+        if ($startDate < $now) {
+            $startDate = clone $now;
         }
 
         $endDate = $endDate->setTime(23, 59);
 
-        return $this->getAvailableSlots($specialist, $startDate, $endDate, false);
+        return $this->getAvailableSlots($specialist, $startDate, $endDate, $now);
     }
 
     private function getSpecialistNearestDaySlots(
         Specialist $specialist,
         \DateTimeImmutable $startDate,
         \DateTimeImmutable $endDate,
+        \DateTimeImmutable $now,
     ): ?DaySlots {
-        $slots = $this->getAvailableSlots($specialist, $startDate, $endDate, true);
+        $slots = $this->getAvailableSlots($specialist, $startDate, $endDate, $now, true);
 
         return $slots[0] ?? null;
     }
@@ -74,6 +78,7 @@ final readonly class SpecialistSchedule
         Specialist $specialist,
         \DateTimeImmutable $startDate,
         \DateTimeImmutable $endDate,
+        \DateTimeImmutable $now,
         bool $stopOnFirstDay = false,
     ): array {
         $workingTime = $this->busySlotFetcher->getCompanyWorkingTime();
@@ -134,7 +139,7 @@ final readonly class SpecialistSchedule
                     $nextSlotStart = $slotStart->modify(sprintf('+%d minutes', self::SLOT_DURATION_IN_MINUTES));
 
                     // Skip slots in the past
-                    if ($slotStart < $this->now) {
+                    if ($slotStart < $now) {
                         $slotStart = $nextSlotStart;
                         continue;
                     }

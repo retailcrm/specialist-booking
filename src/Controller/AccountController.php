@@ -56,8 +56,8 @@ class AccountController extends AbstractController
 
             // get locale
             try {
-                $accountLocale = $client->settings->get()->settings->systemLanguage->value;
-                $account->setLocale($accountLocale);
+                $settingsFromCrm = $client->settings->get()->settings;
+                $account->getSettings()->setFromCrmSettings($settingsFromCrm);
             } catch (ApiExceptionInterface|ClientExceptionInterface $e) {
                 $form->addError(new FormError(sprintf('Error of module registering: %s', $e->getMessage())));
             }

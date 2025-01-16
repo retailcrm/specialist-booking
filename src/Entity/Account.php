@@ -32,8 +32,8 @@ class Account
     #[ORM\OneToMany(targetEntity: Specialist::class, mappedBy: 'account', cascade: ['all'], orphanRemoval: true)]
     private Collection $specialists;
 
-    #[ORM\Column(length: 10, nullable: true)]
-    private ?string $locale = null;
+    #[ORM\Embedded(class: AccountSettings::class, columnPrefix: 'setting_')]
+    private AccountSettings $settings;
 
     public function __construct(
         string $url,
@@ -43,6 +43,7 @@ class Account
         $this->apiKey = $apiKey;
         $this->clientId = self::MODULE_CODE . '-' . uniqid('', false);
         $this->specialists = new ArrayCollection();
+        $this->settings = new AccountSettings();
     }
 
     public function getId(): ?int
@@ -116,20 +117,8 @@ class Account
         return $this;
     }
 
-    public function getLocale(): ?string
+    public function getSettings(): AccountSettings
     {
-        return $this->locale;
-    }
-
-    public function getRequiredLocale(): string
-    {
-        return $this->locale ?? 'en_GB';
-    }
-
-    public function setLocale(?string $locale): static
-    {
-        $this->locale = null === $locale ? null : mb_strtolower($locale);
-
-        return $this;
+        return $this->settings;
     }
 }
