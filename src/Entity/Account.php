@@ -35,6 +35,12 @@ class Account
     #[ORM\Embedded(class: AccountSettings::class, columnPrefix: 'setting_')]
     private AccountSettings $settings;
 
+    #[ORM\Column(options: ['default' => true])]
+    private bool $active = true;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $frozen = false;
+
     public function __construct(
         string $url,
         string $apiKey,
@@ -120,5 +126,29 @@ class Account
     public function getSettings(): AccountSettings
     {
         return $this->settings;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    public function isFrozen(): ?bool
+    {
+        return $this->frozen;
+    }
+
+    public function setFrozen(bool $frozen): static
+    {
+        $this->frozen = $frozen;
+
+        return $this;
     }
 }

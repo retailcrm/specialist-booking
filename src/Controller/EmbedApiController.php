@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Controller\Response\Specialist;
 use App\Controller\Response\SpecialistSlots;
+use App\Exception\JsonStringException;
 use App\Repository\SpecialistRepository;
 use App\Service\AccountManager;
+use App\Service\JsonStringHandler;
 use App\Service\SpecialistSchedule;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -33,22 +35,16 @@ class EmbedApiController extends AbstractController
     public function specialistSlots(
         string $specialistCode,
         Request $request,
+        JsonStringHandler $jsonStringHandler,
         SpecialistSchedule $specialistSchedule,
     ): Response {
-        $payloadString = $request->request->getString('payload');
-        if (!$payloadString) {
-            return new Response('Not defined payload', Response::HTTP_BAD_REQUEST);
+        try {
+            $payload = $jsonStringHandler->handle($request, 'payload');
+        } catch (JsonStringException $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
-        $payload = json_decode($payloadString, true);
-        if (false === $payload || !isset($payload['current_date'])) {
-            return new Response(
-                sprintf('Not found `current_date` in payload: %s', $payloadString),
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-        $currentDateString = $payload['current_date'];
+        $currentDateString = $payload['current_date'] ?? null;
         if (!$currentDateString) {
             return new Response('Not defined currentDate', Response::HTTP_BAD_REQUEST);
         }

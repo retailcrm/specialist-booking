@@ -1,10 +1,31 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <p>
-        {{ 'account'|trans }}: <a href="{{ account.url }}">{{ account.url|trim('/', 'right') }}</a><br />
-        Client ID: <code>{{ account.clientId }}</code>
-    </p>
+    <dl class="row">
+        <dt class="col-sm-2">{{ 'account'|trans }}</dt>
+        <dd class="col-sm-10"><a href="{{ account.url }}">{{ account.url|trim('/', 'right') }}</a></dd>
+
+        <dt class="col-sm-2">Client ID</dt>
+        <dd class="col-sm-10"><code>{{ account.clientId }}</code></dd>
+
+        <dt class="col-sm-2">{{ 'active'|trans }}</dt>
+        <dd class="col-sm-10">
+            {% if account.active %}
+                <span class="text-success">{{ 'yes'|trans }}</span>
+            {% else %}
+                <span class="text-danger">{{ 'no'|trans }}</span>
+            {% endif %}
+        </dd>
+
+        <dt class="col-sm-2">{{ 'frozen'|trans }}</dt>
+        <dd class="col-sm-10">
+            {% if account.frozen %}
+                <span class="text-danger">{{ 'yes'|trans }}</span>
+            {% else %}
+                <span class="text-success">{{ 'no'|trans }}</span>
+            {% endif %}
+        </dd>
+    </dl>
 
     <h3>{{ 'settings'|trans }}</h3>
     <a href="{{ path('specialist_index') }}">
