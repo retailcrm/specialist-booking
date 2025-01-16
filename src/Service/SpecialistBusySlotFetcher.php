@@ -102,6 +102,11 @@ final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetc
         return $nonWorkingDays;
     }
 
+    public function getSlotDuration(): int
+    {
+        return $this->getSettings()->getSlotDuration();
+    }
+
     private function updateSettings(): void
     {
         $crmSettings = $this->accountManager->getClient()->settings->get()->settings;

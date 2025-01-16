@@ -7,8 +7,6 @@ use App\Service\DTO\DaySlots;
 
 final readonly class SpecialistSchedule
 {
-    private const int SLOT_DURATION_IN_MINUTES = 60;
-
     public function __construct(
         private SpecialistBusySlotFetcherInterface $busySlotFetcher,
     ) {
@@ -136,7 +134,7 @@ final readonly class SpecialistSchedule
                 assert(false !== $slotStart && false !== $slotEnd);
 
                 while ($slotStart < $slotEnd) {
-                    $nextSlotStart = $slotStart->modify(sprintf('+%d minutes', self::SLOT_DURATION_IN_MINUTES));
+                    $nextSlotStart = $slotStart->modify(sprintf('+%d minutes', $this->busySlotFetcher->getSlotDuration()));
 
                     // Skip slots in the past
                     if ($slotStart < $now) {
@@ -145,7 +143,7 @@ final readonly class SpecialistSchedule
                     }
 
                     // Add slot if its end time doesn't exceed the working period end time
-                    $slotEndTime = $slotStart->modify(sprintf('+%d minutes', self::SLOT_DURATION_IN_MINUTES));
+                    $slotEndTime = $slotStart->modify(sprintf('+%d minutes', $this->busySlotFetcher->getSlotDuration()));
                     if ($slotEndTime <= $slotEnd) {
                         $availableSlots[] = $slotStart;
                     }
@@ -164,15 +162,15 @@ final readonly class SpecialistSchedule
 
                 $availableSlots = array_filter(
                     $availableSlots,
-                    static function (\DateTimeImmutable $slot) use ($dateKey, $busySlotTimes) {
-                        $slotEnd = $slot->modify(sprintf('+%d minutes', self::SLOT_DURATION_IN_MINUTES));
+                    function (\DateTimeImmutable $slot) use ($dateKey, $busySlotTimes) {
+                        $slotEnd = $slot->modify(sprintf('+%d minutes', $this->busySlotFetcher->getSlotDuration()));
 
                         // Check if this slot intersects with any busy slot
                         foreach ($busySlotTimes as $busyTime) {
                             $busyStart = \DateTimeImmutable::createFromFormat('Y-m-d H:i', $dateKey . ' ' . $busyTime);
                             assert(false !== $busyStart);
 
-                            $busyEnd = $busyStart->modify(sprintf('+%d minutes', self::SLOT_DURATION_IN_MINUTES));
+                            $busyEnd = $busyStart->modify(sprintf('+%d minutes', $this->busySlotFetcher->getSlotDuration()));
 
                             // If there's any overlap, the slot is not available
                             if ($slot < $busyEnd && $slotEnd > $busyStart) {

@@ -24,4 +24,9 @@ interface SpecialistBusySlotFetcherInterface
      * @return array<array{string, string}> in format {'mm.dd', 'mm.dd'}
      */
     public function getNonWorkingDays(): array;
+
+    /**
+     * @return int in minutes
+     */
+    public function getSlotDuration(): int;
 }
