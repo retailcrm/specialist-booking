@@ -41,8 +41,12 @@ class AccountSettings
     public function setFromCrmSettings(Settings $settings): static
     {
         $this->setLocale($settings->systemLanguage->value);
-        $this->setWorkTimesFromCrm($settings->workTimes);
-        $this->setNonWorkingDaysFromCrm($settings->nonWorkingDays);
+        if (null !== $settings->workTimes) {
+            $this->setWorkTimesFromCrm($settings->workTimes);
+        }
+        if (null !== $settings->nonWorkingDays) {
+            $this->setNonWorkingDaysFromCrm($settings->nonWorkingDays);
+        }
 
         return $this;
     }
