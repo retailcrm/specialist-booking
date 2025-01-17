@@ -61,6 +61,7 @@ import { useContext } from '@retailcrm/embed-ui-v1-contexts/remote/custom'
 import SpecialistsList from './components/SpecialistsList.vue'
 import SpecialistCalendar from './components/SpecialistCalendar.vue'
 import type { Specialist } from './types'
+import { CustomFieldSpecialistCode, CustomFieldSpecialistDateTimeCode } from './types'
 
 // i18n setup
 const settings = useSettings()
@@ -87,8 +88,8 @@ const errors = ref<string[]>([])
 // custom fields
 const custom = useContext('order')
 custom.initialize()
-const customFieldSpecialist = useCustomField(custom, 's_booking_specialist', { kind: 'dictionary' })
-const customFieldDateTime = useCustomField(custom, 's_booking_specialist_datetime', { kind: 'datetime' })
+const customFieldSpecialist = useCustomField(custom, CustomFieldSpecialistCode, { kind: 'dictionary' })
+const customFieldDateTime = useCustomField(custom, CustomFieldSpecialistDateTimeCode, { kind: 'datetime' })
 
 const onSidebarOpened = async (opened: boolean) => {
     if (!opened) {
