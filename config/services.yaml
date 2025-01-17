@@ -25,6 +25,8 @@ services:
         tags:
             - { name: controller.argument_value_resolver, priority: 100 }
 
+    RetailCrm\Api\Component\SimpleConnection\RequestVerifier: ~
+
     Aws\S3\S3Client:
         factory: [Aws\S3\S3Client, 'factory']
         arguments:
