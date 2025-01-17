@@ -100,7 +100,11 @@ class AccountController extends AbstractController
             return $this->json($response);
         }
 
-        $account = $this->registerAccount($requestConnectionRegister->systemUrl, $requestConnectionRegister->apiKey);
+        $account = $this->registerAccount(
+            $requestConnectionRegister->systemUrl,
+            $requestConnectionRegister->apiKey,
+            true,
+        );
         if ($account instanceof Account) {
             $em->persist($account);
             $em->flush();
@@ -155,10 +159,12 @@ class AccountController extends AbstractController
         ]);
     }
 
-    private function registerAccount(string $url, string $apiKey): Account|\Throwable
+    private function registerAccount(string $url, string $apiKey, bool $isSimpleConnection = false): Account|\Throwable
     {
         $account = new Account($url, $apiKey);
+        $account->setSimpleConnection($isSimpleConnection);
         $this->accountManager->setAccount($account);
+
         $client = $this->accountManager->getClient();
 
         // get locale
@@ -193,14 +199,6 @@ class AccountController extends AbstractController
 
     private function getIntegrationModuleData(Account $account): IntegrationModule
     {
-        $embedJsConfiguration = new EmbedJsConfiguration();
-        $embedJsConfiguration->entrypoint = EmbedStaticController::EMBED_JS_PATH . '/index.html';
-        $embedJsConfiguration->stylesheet = $this->generateUrl('embed_static', ['path' => 'booking.css']);
-        $embedJsConfiguration->targets = ['order/card:customer.after'];
-
-        $integrations = new Integrations();
-        $integrations->embedJs = $embedJsConfiguration;
-
         $integrationModuleData = new IntegrationModule();
         $integrationModuleData->code = Account::MODULE_CODE;
         $integrationModuleData->integrationCode = $account->getClientId();
@@ -220,7 +218,18 @@ class AccountController extends AbstractController
             'activity' => $this->generateUrl('account_callback_activity'),
             'settings' => $this->generateUrl('account_callback_settings'),
         ];
-        $integrationModuleData->integrations = $integrations;
+
+        if (!$account->isSimpleConnection()) {
+            $embedJsConfiguration = new EmbedJsConfiguration();
+            $embedJsConfiguration->entrypoint = EmbedStaticController::EMBED_JS_PATH . '/index.html';
+            $embedJsConfiguration->stylesheet = $this->generateUrl('embed_static', ['path' => 'booking.css']);
+            $embedJsConfiguration->targets = ['order/card:customer.after'];
+
+            $integrations = new Integrations();
+            $integrations->embedJs = $embedJsConfiguration;
+
+            $integrationModuleData->integrations = $integrations;
+        }
 
         return $integrationModuleData;
     }

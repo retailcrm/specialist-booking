@@ -41,6 +41,9 @@ class Account
     #[ORM\Column(options: ['default' => false])]
     private bool $frozen = false;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $simpleConnection = false;
+
     public function __construct(
         string $url,
         string $apiKey,
@@ -153,6 +156,18 @@ class Account
     public function setFrozen(bool $frozen): static
     {
         $this->frozen = $frozen;
+
+        return $this;
+    }
+
+    public function isSimpleConnection(): bool
+    {
+        return $this->simpleConnection;
+    }
+
+    public function setSimpleConnection(bool $simpleConnection): static
+    {
+        $this->simpleConnection = $simpleConnection;
 
         return $this;
     }
