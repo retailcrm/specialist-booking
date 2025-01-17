@@ -18,13 +18,13 @@ final readonly class Specialist implements \JsonSerializable
     public static function fromEntity(
         \App\Entity\Specialist $specialist,
         DaySlots $daySlots,
-        string $specialistsUploadBaseUrl,
+        ?string $photo,
     ): self {
         return new self(
             $specialist->getDictionaryElementCode(),
             $specialist->getName(),
             $specialist->getPosition(),
-            $specialist->getPhoto() ? $specialistsUploadBaseUrl . '/' . $specialist->getPhoto() : null,
+            $photo,
             $daySlots
         );
     }

@@ -9,21 +9,18 @@ use App\Repository\SpecialistRepository;
 use App\Service\AccountManager;
 use App\Service\JsonStringHandler;
 use App\Service\SpecialistSchedule;
+use Gaufrette\Extras\Resolvable\ResolvableFilesystem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class EmbedApiController extends AbstractController
 {
     public function __construct(
         private readonly AccountManager $accountManager,
         private readonly SpecialistRepository $specialistRepository,
-        #[Autowire('%specialists_dir%')]
-        private readonly string $specialistsUploadDir,
     ) {
     }
 
@@ -78,18 +75,15 @@ class EmbedApiController extends AbstractController
     }
 
     #[Route(path: '/embed/api/specialists', name: 'embed_api_specialists', methods: ['POST'])]
-    public function specialists(SpecialistSchedule $specialistSchedule): JsonResponse
-    {
+    public function specialists(
+        SpecialistSchedule $specialistSchedule,
+        ResolvableFilesystem $fileSystem,
+    ): JsonResponse {
         if (!$this->accountManager->hasAccount()) {
             throw $this->createNotFoundException();
         }
 
         $account = $this->accountManager->getAccount();
-        $baseUrl = sprintf(
-            '%s%s',
-            rtrim($this->generateUrl('index', [], UrlGeneratorInterface::ABSOLUTE_URL), '/'),
-            $this->specialistsUploadDir
-        );
 
         $specialists = $this->specialistRepository->findByAccountOrderedByOrdering($account);
         $specialistSlots = $specialistSchedule->getNearestDaySchedule($specialists, new \DateTimeImmutable('now'));
@@ -103,7 +97,7 @@ class EmbedApiController extends AbstractController
             $availableSpecialists[] = Specialist::fromEntity(
                 $specialist,
                 $specialistSlots[(int) $specialist->getId()],
-                $baseUrl
+                $specialist->getPhoto() ? $fileSystem->resolve($specialist->getPhoto()) : null
             );
         }
 

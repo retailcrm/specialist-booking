@@ -19,7 +19,7 @@
 
                 {% if specialistForm.vars.data.photo %}
                     <div class="photo-preview">
-                        <img src="{{ asset('uploads/specialists/' ~ specialistForm.vars.data.photo) }}" alt="{{ 'photo'|trans }}">
+                        <img src="{{ fileSystem.resolve(specialistForm.vars.data.photo) }}" alt="{{ 'photo'|trans }}">
                     </div>
                 {% endif %}
 

@@ -17,7 +17,7 @@
 
 ## Install
 
-1. Создайте `.env` из `.env.dist` и укажите `DATABASE_URL`
+1. Создайте `.env` из `.env.dist`, укажите значения для ENV-переменных `DATABASE_URL` и `AWS_*`
 2. Создайте `auth.json` на основе `auth.json.dist` и внесите свой токен доступа
 3. Выполните
 ```shell

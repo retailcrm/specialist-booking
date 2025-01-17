@@ -1,0 +1,15 @@
+knp_gaufrette:
+    adapters:
+        specialist_photos:
+            aws_s3:
+                service_id: Aws\S3\S3Client
+                bucket_name: '%env(AWS_BUCKET)%'
+                detect_content_type: true
+                options:
+                    directory: '%specialists_dir%'
+                    create: true
+                    acl: public-read
+    filesystems:
+        specialist_photos:
+            adapter: specialist_photos
+            alias: specialist_photos_filesystem

@@ -10,6 +10,8 @@ use App\Repository\SpecialistRepository;
 use App\Service\AccountManager;
 use App\Service\CustomFieldManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Gaufrette\Extras\Resolvable\ResolvableFilesystem;
+use Gaufrette\Filesystem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +26,6 @@ class SpecialistController extends AbstractController
         private readonly EntityManagerInterface $em,
         private readonly SpecialistRepository $specialistRepository,
         private readonly SluggerInterface $slugger,
-        #[Autowire('%kernel.project_dir%/public%specialists_dir%')]
-        private readonly string $specialistsUploadDir,
     ) {
     }
 
@@ -33,6 +33,9 @@ class SpecialistController extends AbstractController
     public function index(
         Request $request,
         CustomFieldManager $customFieldManager,
+        #[Autowire('@specialist_photos_filesystem')]
+        Filesystem $specialistPhotosFilesystem,
+        ResolvableFilesystem $fileSystem,
     ): Response {
         if (!$this->accountManager->hasAccount()) {
             throw $this->createNotFoundException();
@@ -90,12 +93,8 @@ class SpecialistController extends AbstractController
                     $safeFilename = $this->slugger->slug($originalFilename);
                     $newFilename = $safeFilename . '-' . uniqid('', false) . '.' . $specialistModel->photoFile->guessExtension();
 
-                    try {
-                        $specialistModel->photoFile->move($this->specialistsUploadDir, $newFilename);
-                        $specialist->setPhoto($newFilename);
-                    } catch (\Exception) {
-                        // Handle the exception
-                    }
+                    $specialistPhotosFilesystem->write($newFilename, $specialistModel->photoFile->getContent());
+                    $specialist->setPhoto($newFilename);
                 }
             }
 
@@ -111,6 +110,7 @@ class SpecialistController extends AbstractController
 
         return $this->render('specialist/index.html.twig', [
             'form' => $form,
+            'fileSystem' => $fileSystem,
         ]);
     }
 }

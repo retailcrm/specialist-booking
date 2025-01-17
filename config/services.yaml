@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    specialists_dir: '/uploads/specialists'
+    specialists_dir: 'specialists'
 
 services:
     # default configuration for services in *this* file
@@ -20,3 +20,25 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    Aws\S3\S3Client:
+        factory: [Aws\S3\S3Client, 'factory']
+        arguments:
+            -
+                version: latest
+                use_path_style_endpoint: true
+                endpoint: '%env(AWS_ENDPOINT)%'
+                region: '%env(AWS_REGION)%'
+                credentials:
+                    key: '%env(AWS_ACCESS)%'
+                    secret: '%env(AWS_SECRET)%'
+
+    Gaufrette\Extras\Resolvable\Resolver\AwsS3PublicUrlResolver:
+        arguments:
+            $bucket: '%env(AWS_BUCKET)%'
+            $baseDir: '%specialists_dir%'
+
+    Gaufrette\Extras\Resolvable\ResolvableFilesystem:
+        arguments:
+            $decorated: '@specialist_photos_filesystem'
+            $resolver: '@Gaufrette\Extras\Resolvable\Resolver\AwsS3PublicUrlResolver'
