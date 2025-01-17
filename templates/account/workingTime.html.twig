@@ -7,10 +7,8 @@
     {{ form(timeSlotForm) }}
 
     <h3>{{ 'settings_from_account'|trans }}</h3>
-    <div class="card">
-        <div class="card-body">
-            {{ 'info_about_working_time_from_account'|trans({ '%public_url%': publicUrl })|raw }}
-        </div>
+    <div class="alert alert-warning" role="alert">
+        {{ 'info_about_working_time_from_account'|trans({ '%public_url%': publicUrl })|raw }}
     </div>
 
     <h4 class="section">{{ 'working_time'|trans }}</h4>

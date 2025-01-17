@@ -20,4 +20,9 @@ class AccountRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['clientId' => $clientId]);
     }
+
+    public function getByUrl(string $url): ?Account
+    {
+        return $this->findOneBy(['url' => Account::normalizeUrl($url)]);
+    }
 }

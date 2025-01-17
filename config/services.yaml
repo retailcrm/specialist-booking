@@ -21,6 +21,10 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\ArgumentResolver\CallbackValueResolver:
+        tags:
+            - { name: controller.argument_value_resolver, priority: 100 }
+
     Aws\S3\S3Client:
         factory: [Aws\S3\S3Client, 'factory']
         arguments:

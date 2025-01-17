@@ -57,6 +57,11 @@ class Account
         return $this->id;
     }
 
+    public static function normalizeUrl(string $url): string
+    {
+        return rtrim($url, '/');
+    }
+
     public function getUrl(): string
     {
         return $this->url;
@@ -64,7 +69,7 @@ class Account
 
     public function setUrl(string $url): static
     {
-        $this->url = $url;
+        $this->url = self::normalizeUrl($url);
 
         return $this;
     }

@@ -5,7 +5,7 @@
 {% block body %}
     <dl class="row">
         <dt class="col-sm-2">{{ 'account'|trans }}</dt>
-        <dd class="col-sm-10"><a href="{{ publicUrl }}">{{ publicUrl|trim('/', 'right') }}</a></dd>
+        <dd class="col-sm-10"><a href="{{ publicUrl }}">{{ publicUrl }}</a></dd>
 
         <dt class="col-sm-2">Client ID</dt>
         <dd class="col-sm-10"><code>{{ account.clientId }}</code></dd>
