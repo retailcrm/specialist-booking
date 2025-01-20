@@ -33,13 +33,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\LocaleAwareInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AccountController extends AbstractController
 {
     public function __construct(
         private readonly AccountManager $accountManager,
-        private readonly TranslatorInterface $translator,
+        private readonly TranslatorInterface&LocaleAwareInterface $translator,
         private readonly CustomFieldManager $customFieldManager,
         private readonly LoggerInterface $logger,
     ) {
@@ -177,6 +178,7 @@ class AccountController extends AbstractController
         try {
             $settingsFromCrm = $client->settings->get()->settings;
             $account->getSettings()->setFromCrmSettings($settingsFromCrm);
+            $this->translator->setLocale($account->getSettings()->getRequiredLocale());
         } catch (ApiExceptionInterface|ClientExceptionInterface $e) {
             return $e;
         }

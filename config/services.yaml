@@ -48,3 +48,5 @@ services:
         arguments:
             $decorated: '@specialist_photos_filesystem'
             $resolver: '@Gaufrette\Extras\Resolvable\Resolver\AwsS3PublicUrlResolver'
+
+    Symfony\Contracts\Translation\LocaleAwareInterface: '@translator'
