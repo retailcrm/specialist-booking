@@ -44,6 +44,9 @@ class Account
     #[ORM\Column(options: ['default' => false])]
     private bool $simpleConnection = false;
 
+    #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
+    private \DateTimeImmutable $createdAt;
+
     public function __construct(
         string $url,
         string $apiKey,
@@ -53,6 +56,7 @@ class Account
         $this->clientId = self::MODULE_CODE . '-' . uniqid('', false);
         $this->specialists = new ArrayCollection();
         $this->settings = new AccountSettings();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -168,6 +172,18 @@ class Account
     public function setSimpleConnection(bool $simpleConnection): static
     {
         $this->simpleConnection = $simpleConnection;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
