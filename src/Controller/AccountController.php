@@ -206,8 +206,8 @@ class AccountController extends AbstractController
     private function getIntegrationModuleData(Account $account): IntegrationModule
     {
         $integrationModuleData = new IntegrationModule();
-        $integrationModuleData->code = Account::MODULE_CODE;
-        $integrationModuleData->integrationCode = $account->getClientId();
+        $integrationModuleData->code = $account->getClientId();
+        $integrationModuleData->integrationCode = Account::MODULE_CODE;
         $integrationModuleData->active = true;
         $integrationModuleData->name = $this->translator->trans('booking_name');
         $integrationModuleData->clientId = $account->getClientId();
