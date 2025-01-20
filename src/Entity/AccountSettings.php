@@ -40,7 +40,10 @@ class AccountSettings
 
     public function setFromCrmSettings(Settings $settings): static
     {
-        $this->setLocale($settings->systemLanguage->value);
+        /* @phpstan-ignore-next-line */
+        if (null !== $settings->systemLanguage?->value) {
+            $this->setLocale($settings->systemLanguage->value);
+        }
         if (null !== $settings->workTimes) {
             $this->setWorkTimesFromCrm($settings->workTimes);
         }

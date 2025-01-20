@@ -9,6 +9,7 @@ use App\Repository\AccountRepository;
 use App\Service\AccountManager;
 use App\Service\CustomFieldManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Monolog\Attribute\WithMonologChannel;
 use Psr\Log\LoggerInterface;
 use RetailCrm\Api\Component\SimpleConnection\RequestVerifier;
 use RetailCrm\Api\Interfaces\ApiExceptionInterface;
@@ -36,6 +37,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\LocaleAwareInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+#[WithMonologChannel('app')]
 class AccountController extends AbstractController
 {
     public function __construct(

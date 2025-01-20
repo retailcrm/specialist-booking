@@ -1,6 +1,7 @@
 monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
+        - app # Custom channel for direct logging
 
 when@dev:
     monolog:
@@ -51,6 +52,12 @@ when@prod:
                 path: php://stderr
                 level: debug
                 formatter: monolog.formatter.json
+            direct_errors:
+                type: stream
+                path: php://stdout
+                level: info
+                formatter: monolog.formatter.json
+                channels: [app]
             console:
                 type: console
                 process_psr_3_messages: false
