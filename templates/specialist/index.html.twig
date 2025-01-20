@@ -11,7 +11,7 @@
          data-index="{{ form.specialists|length }}">
 
         {% for specialistForm in form.specialists %}
-            <div class="specialist-item">
+            <div class="form-item">
                 {{ form_row(specialistForm.id) }}
                 {{ form_row(specialistForm.name) }}
                 {{ form_row(specialistForm.specialty) }}
@@ -42,7 +42,7 @@
     </div>
 
     <div>
-    <button type="submit" class="btn btn-primary">{{ 'save'|trans }}</button>
+        <button type="submit" class="btn btn-primary">{{ 'save'|trans }}</button>
     </div>
     {{ form_end(form) }}
 {% endblock %}
@@ -53,14 +53,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             const container = document.querySelector('.specialists-collection');
             const addButton = document.querySelector('.add-specialist-btn');
-            let index = container.dataset.index;
+            let index = parseInt(container.dataset.index);
 
             // Add new specialist
             addButton.addEventListener('click', function() {
                 const prototype = container.dataset.prototype;
                 const newForm = prototype.replace(/__name__/g, index);
                 const specialistItem = document.createElement('div');
-                specialistItem.className = 'specialist-item';
+                specialistItem.className = 'form-item';
                 specialistItem.innerHTML = newForm;
                 
                 // Add remove button
@@ -87,7 +87,7 @@
                     const file = e.target.files[0];
                     if (file) {
                         const reader = new FileReader();
-                        let previewContainer = e.target.closest('.specialist-item').querySelector('.photo-preview');
+                        let previewContainer = e.target.closest('.form-item').querySelector('.photo-preview');
                         
                         if (!previewContainer) {
                             previewContainer = document.createElement('div');
@@ -107,7 +107,7 @@
 
         function initializeRemoveButton(button) {
             button.addEventListener('click', function() {
-                button.closest('.specialist-item').remove();
+                button.closest('.form-item').remove();
             });
         }
     </script>

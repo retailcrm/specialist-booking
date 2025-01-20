@@ -23,7 +23,7 @@ class SpecialistType extends AbstractType
         $builder
             ->add('id', HiddenType::class)
             ->add('name', TextType::class, [
-                'label' => 'name',
+                'label' => 'person_name',
                 'required' => true,
             ])
             ->add('specialty', EntityType::class, [

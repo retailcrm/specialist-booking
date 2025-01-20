@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'specialties'|trans }} / {{ parent() }}{% endblock %}
+
+{% block body %}
+    <h2>{{ 'specialties'|trans }}</h2>
+
+    {{ form_start(form) }}
+    <div class="specialties-collection"
+         data-prototype="{{ form_widget(form.specialties.vars.prototype)|e('html_attr') }}"
+         data-index="{{ form.specialties|length }}">
+
+        {% for specialtyForm in form.specialties %}
+            <div class="form-item">
+                {{ form_row(specialtyForm.name) }}
+
+                <button type="button" class="btn btn-outline-danger btn-sm remove-specialty-btn">
+                    {{ 'remove_specialty'|trans }}
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="buttons-bar">
+        <a href="{{ path('account_settings_index') }}"><button type="button" class="btn btn-secondary btn-sm">
+            ← {{ 'back_to_settings'|trans }}
+        </button></a>
+        <button type="button" class="btn btn-secondary btn-sm add-specialty-btn">
+            {{ 'add_specialty'|trans }}
+        </button>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-primary">{{ 'save'|trans }}</button>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.specialties-collection');
+            const addButton = document.querySelector('.add-specialty-btn');
+            let index = parseInt(container.dataset.index);
+
+            // Add new specialty
+            addButton.addEventListener('click', function() {
+                const prototype = container.dataset.prototype;
+                const newForm = prototype.replace(/__name__/g, index);
+                const specialtyItem = document.createElement('div');
+                specialtyItem.className = 'form-item';
+                specialtyItem.innerHTML = newForm;
+                
+                // Add remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'btn btn-outline-danger btn-sm remove-specialty-btn';
+                removeBtn.innerHTML = '{{ 'remove_specialty'|trans }}';
+                specialtyItem.append(removeBtn)
+                
+                container.appendChild(specialtyItem);
+                index++;
+                container.dataset.index = index;
+
+                // Initialize remove button handler
+                initializeRemoveButton(removeBtn);
+            });
+
+            // Initialize existing remove buttons
+            document.querySelectorAll('.remove-specialty-btn').forEach(initializeRemoveButton);
+        });
+
+        function initializeRemoveButton(button) {
+            button.addEventListener('click', function() {
+                button.closest('.form-item').remove();
+            });
+        }
+    </script>
+{% endblock %} 

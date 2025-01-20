@@ -6,17 +6,17 @@ body {
     margin-bottom: 20px;
 }
 
-.specialist-item {
+.form-item {
     border: 1px solid #ddd;
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 4px;
 }
-.specialist-item .photo-preview {
+.form-item .photo-preview {
     max-width: 150px;
     margin: 10px 0;
 }
-.specialist-item .photo-preview img {
+.form-item .photo-preview img {
     max-width: 100%;
     height: auto;
 }

@@ -30,6 +30,7 @@
     </dl>
 
     <h3>{{ 'settings'|trans }}</h3>
+    <a href="{{ path('specialty_index') }}"><button type="button" class="btn btn-outline-dark">{{ 'specialties'|trans }}</button></a>
     <a href="{{ path('specialist_index') }}"><button type="button" class="btn btn-outline-dark">{{ 'specialists'|trans }}</button></a>
     <a href="{{ path('account_settings_working_time') }}"><button type="button" class="btn btn-outline-dark">{{ 'working_time'|trans }}</button></a>
 {% endblock %}

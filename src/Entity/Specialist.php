@@ -33,6 +33,7 @@ class Specialist
     private \DateTimeImmutable $createdAt;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Specialty $specialty = null;
 
     public function __construct(string $name)
