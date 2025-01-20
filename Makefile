@@ -16,6 +16,9 @@ vendor: composer.json composer.lock
 	@$(PHP) composer install -o -n --no-ansi
 	@touch vendor || true
 
+vendor-prod: composer.json composer.lock
+	@$(PHP) composer install -o -n --no-ansi --no-dev
+
 db-create: $(PHP_CONSOLE_DEPS)
 	@$(PHP) bin/console doctrine:database:create
 

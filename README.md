@@ -33,7 +33,7 @@ make start
 Запуск линтеров и тестов
 ```shell
 make check
-make phpunit
+APP_ENV=test make phpunit
 make twig-lint
 make yaml-lint
 make js-lint

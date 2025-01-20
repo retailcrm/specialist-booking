@@ -4,11 +4,12 @@ services:
             context: ./docker/dev/php
             args:
                 PHP_VERSION: ${PHP_VERSION:-8.3}
-        env_file: .env
         volumes:
             - ./:/var/www/booking
         environment:
             COMPOSER_HOME: /tmp/composer
+            APP_ENV: ${APP_ENV:-dev}
+            APP_DEBUG: ${APP_DEBUG:-1}
         tmpfs:
             - /tmp
     nginx:
