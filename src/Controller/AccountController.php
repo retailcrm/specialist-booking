@@ -9,11 +9,13 @@ use App\Repository\AccountRepository;
 use App\Service\AccountManager;
 use App\Service\CustomFieldManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use RetailCrm\Api\Component\SimpleConnection\RequestVerifier;
 use RetailCrm\Api\Interfaces\ApiExceptionInterface;
 use RetailCrm\Api\Interfaces\ClientExceptionInterface;
 use RetailCrm\Api\Model\Callback\Entity\Integration\IntegrationModule as CallbackIntegrationModule;
 use RetailCrm\Api\Model\Callback\Entity\SimpleConnection\RequestProperty\RequestConnectionRegister;
+use RetailCrm\Api\Model\Callback\Response\ErrorResponse;
 use RetailCrm\Api\Model\Callback\Response\SimpleConnection\ConnectionConfigResponse;
 use RetailCrm\Api\Model\Callback\Response\SimpleConnection\ConnectionRegisterResponse;
 use RetailCrm\Api\Model\Entity\Integration\EmbedJs\EmbedJsConfiguration;
@@ -39,6 +41,7 @@ class AccountController extends AbstractController
         private readonly AccountManager $accountManager,
         private readonly TranslatorInterface $translator,
         private readonly CustomFieldManager $customFieldManager,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -88,12 +91,18 @@ class AccountController extends AbstractController
     ): Response {
         $verify = $requestVerifier->verify($secret, $requestConnectionRegister);
         if (false === $verify) {
-            throw new \RuntimeException(sprintf('Request verification failed: %s', json_encode($requestConnectionRegister)));
+            $this->logger->error(sprintf('Request verification failed: %s', json_encode($requestConnectionRegister)));
+
+            return $this->json(new ErrorResponse(), Response::HTTP_BAD_REQUEST);
         }
 
         $account = $accountRepository->getByUrl($requestConnectionRegister->systemUrl);
         if (null !== $account) {
-            throw new \RuntimeException(sprintf('Account already exists: %s', json_encode($requestConnectionRegister)));
+            $response = new ErrorResponse();
+            $response->errorMsg = 'Account already exists';
+            $this->logger->info(sprintf('%s: %s', $response->errorMsg, json_encode($requestConnectionRegister)));
+
+            return $this->json($response, Response::HTTP_BAD_REQUEST);
         }
 
         $account = $this->registerAccount(
@@ -115,7 +124,11 @@ class AccountController extends AbstractController
             return $this->json($response);
         }
 
-        throw new \RuntimeException(sprintf('Error of module registering: %s', json_encode($requestConnectionRegister)));
+        $response = new ErrorResponse();
+        $response->errorMsg = sprintf('Error of module registering: %s', $account->getMessage());
+        $this->logger->error(sprintf('%s: %s', $response->errorMsg, json_encode($requestConnectionRegister)));
+
+        return $this->json($response, Response::HTTP_BAD_REQUEST);
     }
 
     #[Route(path: '/register', name: 'account_register', methods: ['GET', 'POST'])]
