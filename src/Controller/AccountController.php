@@ -8,6 +8,7 @@ use App\Form\Type\AccountType;
 use App\Repository\AccountRepository;
 use App\Service\AccountManager;
 use App\Service\CustomFieldManager;
+use App\Service\EmbedStatic;
 use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Attribute\WithMonologChannel;
 use Psr\Log\LoggerInterface;
@@ -231,9 +232,9 @@ class AccountController extends AbstractController
 
         if (!$account->isSimpleConnection()) {
             $embedJsConfiguration = new EmbedJsConfiguration();
-            $embedJsConfiguration->entrypoint = EmbedStaticController::EMBED_JS_PATH . '/index.html';
+            $embedJsConfiguration->entrypoint = EmbedStatic::EMBED_JS_PATH . '/index.html';
             $embedJsConfiguration->stylesheet = $this->generateUrl('embed_static', ['path' => 'booking.css']);
-            $embedJsConfiguration->targets = ['order/card:customer.after'];
+            $embedJsConfiguration->targets = EmbedStatic::TARGETS;
 
             $integrations = new Integrations();
             $integrations->embedJs = $embedJsConfiguration;

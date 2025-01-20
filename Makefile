@@ -68,3 +68,7 @@ js-build-dev:
 
 js-lint:
 	@cd embed && make lint
+
+zip-archive: node-modules js-build
+	@read -p "Enter new version (integer): " VERSION; \
+	$(PHP) bin/console app:embed:zip $$VERSION
