@@ -77,7 +77,7 @@ final readonly class CustomFieldManager
         try {
             $specialistField = $client->customFields->get(self::ENTITY, self::CUSTOM_FIELD_SPECIALIST_CODE)->customField;
             $this->updateField($client, $specialistField, [
-                'name' => $this->translator->trans('specialists'),
+                'name' => $this->translator->trans('specialist'),
             ]);
         } catch (ApiExceptionInterface $e) {
             if (!$this->isNotFoundError($e)) {
@@ -86,7 +86,7 @@ final readonly class CustomFieldManager
 
             $field = new CustomField();
             $field->code = self::CUSTOM_FIELD_SPECIALIST_CODE;
-            $field->name = $this->translator->trans('specialists');
+            $field->name = $this->translator->trans('specialist');
             $field->type = 'dictionary';
             $field->dictionary = self::CUSTOM_FIELD_SPECIALIST_CODE;
             $field->entity = 'order';
