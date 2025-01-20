@@ -45,7 +45,9 @@ class SpecialistController extends AbstractController
         $specialists = $this->specialistRepository->findByAccountOrderedByOrdering($account);
         $collectionModel = new SpecialistCollectionModel($specialists);
 
-        $form = $this->createForm(SpecialistCollectionType::class, $collectionModel);
+        $form = $this->createForm(SpecialistCollectionType::class, $collectionModel, [
+            'account' => $account,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -85,7 +87,7 @@ class SpecialistController extends AbstractController
                     $specialist->setName($specialistModel->name);
                 }
 
-                $specialist->setPosition($specialistModel->position);
+                $specialist->setSpecialty($specialistModel->specialty);
                 $specialist->setOrdering($specialistModel->ordering);
 
                 if ($specialistModel->photoFile) {

@@ -2,7 +2,11 @@
 
 namespace App\Form\Type;
 
+use App\Entity\Account;
+use App\Entity\Specialty;
 use App\Form\Model\SpecialistModel;
+use App\Repository\SpecialtyRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -22,8 +26,11 @@ class SpecialistType extends AbstractType
                 'label' => 'name',
                 'required' => true,
             ])
-            ->add('position', TextType::class, [
-                'label' => 'position',
+            ->add('specialty', EntityType::class, [
+                'class' => Specialty::class,
+                'choice_label' => 'name',
+                'query_builder' => fn (SpecialtyRepository $repo) => $repo->findByAccountOrderingByNameQueryBuilder($options['account']),
+                'label' => 'specialty',
                 'required' => false,
             ])
             ->add('ordering', IntegerType::class, [
@@ -46,8 +53,12 @@ class SpecialistType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'data_class' => SpecialistModel::class,
-        ]);
+        $resolver
+            ->setDefaults([
+                'data_class' => SpecialistModel::class,
+            ])
+            ->setRequired('account')
+            ->setAllowedTypes('account', [Account::class])
+        ;
     }
 }

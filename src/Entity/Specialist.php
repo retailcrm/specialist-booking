@@ -6,6 +6,7 @@ use App\Repository\SpecialistRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SpecialistRepository::class)]
+#[ORM\Index(name: 'specialist_account_id_ordering_idx', columns: ['account_id', 'ordering'])]
 class Specialist
 {
     public const string CUSTOM_DICTIONARY_ELEMENT_CODE_PREFIX = 's-';
@@ -17,9 +18,6 @@ class Specialist
 
     #[ORM\Column(length: 255)]
     private string $name;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $position = null;
 
     #[ORM\Column]
     private int $ordering = 99;
@@ -33,6 +31,9 @@ class Specialist
 
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeImmutable $createdAt;
+
+    #[ORM\ManyToOne]
+    private ?Specialty $specialty = null;
 
     public function __construct(string $name)
     {
@@ -82,18 +83,6 @@ class Specialist
         return $this;
     }
 
-    public function getPosition(): ?string
-    {
-        return $this->position;
-    }
-
-    public function setPosition(?string $position): static
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
     public function getOrdering(): ?int
     {
         return $this->ordering;
@@ -138,6 +127,18 @@ class Specialist
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getSpecialty(): ?Specialty
+    {
+        return $this->specialty;
+    }
+
+    public function setSpecialty(?Specialty $specialty): static
+    {
+        $this->specialty = $specialty;
 
         return $this;
     }

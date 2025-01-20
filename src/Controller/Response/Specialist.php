@@ -23,7 +23,7 @@ final readonly class Specialist implements \JsonSerializable
         return new self(
             $specialist->getDictionaryElementCode(),
             $specialist->getName(),
-            $specialist->getPosition(),
+            $specialist->getSpecialty()?->getName(),
             $photo,
             $daySlots
         );

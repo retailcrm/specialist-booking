@@ -3,6 +3,7 @@
 namespace App\Form\Model;
 
 use App\Entity\Specialist;
+use App\Entity\Specialty;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -12,8 +13,7 @@ class SpecialistModel
     #[Assert\Length(min: 2, max: 255)]
     public string $name;
 
-    #[Assert\Length(max: 255)]
-    public ?string $position = null;
+    public ?Specialty $specialty = null;
 
     #[Assert\Range(min: 0, max: 9999)]
     public int $ordering = 99;
@@ -30,7 +30,7 @@ class SpecialistModel
     {
         $specialistModel = new self($s->getId());
         $specialistModel->name = $s->getName();
-        $specialistModel->position = $s->getPosition();
+        $specialistModel->specialty = $s->getSpecialty();
         $specialistModel->ordering = $s->getOrdering() ?? 99;
         $specialistModel->photo = $s->getPhoto();
 
