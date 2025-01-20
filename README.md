@@ -38,3 +38,11 @@ make twig-lint
 make yaml-lint
 make js-lint
 ```
+
+## Создание архива js-модуля
+
+```shell
+make zip-archive
+```
+
+В ходе выполнения будет запрошен номер версии модуля, который будет подставлен в manifest-файл.
