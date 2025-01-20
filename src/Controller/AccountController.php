@@ -9,6 +9,7 @@ use App\Repository\AccountRepository;
 use App\Service\AccountManager;
 use App\Service\CustomFieldManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use RetailCrm\Api\Component\SimpleConnection\RequestVerifier;
 use RetailCrm\Api\Interfaces\ApiExceptionInterface;
 use RetailCrm\Api\Interfaces\ClientExceptionInterface;
@@ -40,6 +41,7 @@ class AccountController extends AbstractController
         private readonly AccountManager $accountManager,
         private readonly TranslatorInterface $translator,
         private readonly CustomFieldManager $customFieldManager,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -89,15 +91,18 @@ class AccountController extends AbstractController
     ): Response {
         $verify = $requestVerifier->verify($secret, $requestConnectionRegister);
         if (false === $verify) {
-            return $this->json(new ErrorResponse());
+            $this->logger->error(sprintf('Request verification failed: %s', json_encode($requestConnectionRegister)));
+
+            return $this->json(new ErrorResponse(), Response::HTTP_BAD_REQUEST);
         }
 
         $account = $accountRepository->getByUrl($requestConnectionRegister->systemUrl);
         if (null !== $account) {
             $response = new ErrorResponse();
             $response->errorMsg = 'Account already exists';
+            $this->logger->info(sprintf('%s: %s', $response->errorMsg, json_encode($requestConnectionRegister)));
 
-            return $this->json($response);
+            return $this->json($response, Response::HTTP_BAD_REQUEST);
         }
 
         $account = $this->registerAccount(
@@ -121,8 +126,9 @@ class AccountController extends AbstractController
 
         $response = new ErrorResponse();
         $response->errorMsg = sprintf('Error of module registering: %s', $account->getMessage());
+        $this->logger->error(sprintf('%s: %s', $response->errorMsg, json_encode($requestConnectionRegister)));
 
-        return $this->json($response);
+        return $this->json($response, Response::HTTP_BAD_REQUEST);
     }
 
     #[Route(path: '/register', name: 'account_register', methods: ['GET', 'POST'])]
