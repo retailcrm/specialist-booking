@@ -249,8 +249,10 @@ class AccountController extends AbstractController
         name: 'account_callback_settings',
         methods: ['POST'],
     )]
-    public function updateSettings(EntityManagerInterface $em, Settings $settings): Response
+    public function updateSettings(Request $request, EntityManagerInterface $em, Settings $settings): Response
     {
+        $this->logger->log('info', 'Settings data', ['settings' => $settings]);
+
         if (!$this->accountManager->hasAccount()) {
             throw $this->createNotFoundException();
         }
