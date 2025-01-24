@@ -1018,6 +1018,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@omnicajs/symfony-router@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@omnicajs/symfony-router/-/symfony-router-1.0.0.tgz#37d040edb097ebe8c7c17257b1cfe8c36d26c587"
+  integrity sha512-AuxnsWnlHltE81Vwi6GSCck/X8CLu20oa35JgCimCBhOdZ5pG/ZUJmq4f8M7J82o7fopW0SbGHTK7iHmU4L0wA==
+
 "@omnicajs/vue-remote@^0.2.5":
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/@omnicajs/vue-remote/-/vue-remote-0.2.5.tgz#44dd0a7834535e99067f2d4c8dd0d0599fd852f9"
@@ -1035,36 +1040,44 @@
   resolved "https://registry.yarnpkg.com/@remote-ui/rpc/-/rpc-1.4.5.tgz#20328970c314374d96fdaae1cf93aca4b47fefee"
   integrity sha512-Cr+06niG/vmE4A9YsmaKngRuuVSWKMY42NMwtZfy+gctRWGu6Wj9BWuMJg5CEp+JTkRBPToqT5rqnrg1G/Wvow==
 
-"@retailcrm/embed-ui-v1-components@^0.5.8":
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-components/-/embed-ui-v1-components-0.5.8.tgz#66c0281e672a206313b73f9719f119b35ce0b323"
-  integrity sha512-Kvak9TpEW6D9J+Xd5jkuhIl7zcDjC8L4qC/4Om1koI/KGKXPK0cyzlD7MI1BDXdOEwwlP7lI7hxDZEwYFqkQvg==
+"@retailcrm/embed-ui-v1-components@^0.5.15":
+  version "0.5.15"
+  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-components/-/embed-ui-v1-components-0.5.15.tgz#8769a00ca3c037f366baa311e094dac469500d94"
+  integrity sha512-SFEcbt+0N9N9H3uE3vfbJ+mOjqs5YmyFWqChw63mcwzB75l0aspXVrU1fWLRVfbt4fzn8uNEEvELMcsxQ3mW9g==
   dependencies:
     "@omnicajs/vue-remote" "^0.2.5"
     "@remote-ui/rpc" "^1.4.5"
+    "@retailcrm/image-preview" "^1.0.2"
     remark-gfm "^4.0.0"
 
-"@retailcrm/embed-ui-v1-contexts@^0.5.8":
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-contexts/-/embed-ui-v1-contexts-0.5.8.tgz#cb43d70f761d93e88078ceda4ea112e0f9e6fd75"
-  integrity sha512-6zhfj+xajnRuWfnxWrFTQmq8ag/kBvoTVAYw5KzvHlRhAFQCf7Hzmloo+CVDvKWjTJA5wS3Ww8+2Q8UR7Bm7oA==
+"@retailcrm/embed-ui-v1-contexts@^0.5.15":
+  version "0.5.15"
+  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-contexts/-/embed-ui-v1-contexts-0.5.15.tgz#5e8083f9e4562d18ef8c3e394b849e118720b452"
+  integrity sha512-tGt5rsgK088rmLuYl51N2BiNDJPAf9Kv+wAwBPDFdCElkUuz8VzwB/JVqAk8lQ5+vKqEP+CW3ZbpbpnIH8vxtA==
   dependencies:
-    "@retailcrm/embed-ui-v1-types" "^0.5.8"
+    "@omnicajs/symfony-router" "^1.0.0"
+    "@retailcrm/embed-ui-v1-types" "^0.5.15"
 
-"@retailcrm/embed-ui-v1-types@^0.5.8":
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-types/-/embed-ui-v1-types-0.5.8.tgz#fd34982d2daf3c3d03471b35aaae5d59dcf6fb2c"
-  integrity sha512-NFsc+dpQwWtk5fW/y8Pwg5ok8SR/KRGDv8zFc1q/jYBDS1gATRB2se9Mu88QBe6kpD56wwacci66bCbA/G8Brw==
+"@retailcrm/embed-ui-v1-types@^0.5.15":
+  version "0.5.15"
+  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-types/-/embed-ui-v1-types-0.5.15.tgz#ae0de0891953f84efb9ddba8091d03b95ca15e09"
+  integrity sha512-rnFOQEnosFE9N9JeAA3Jz6ZDg6Z0cralR0X5M6x61J0tAajd94L1MnpiYSKlXdl8r47+2Fi34ezPqwH5uIUQBw==
 
-"@retailcrm/embed-ui@^0.5.8":
-  version "0.5.8"
-  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui/-/embed-ui-0.5.8.tgz#9345dc2f9b78a1ce9012d9a1f87a6777514542fb"
-  integrity sha512-qMe5rWvb0NgBGn3aPPvLtXWnrCOtahjCJXyu7BhY/SMjR/Y9wmluesAkCVJJdi2zGFh/dHuCvVVRRckALO6vDQ==
+"@retailcrm/embed-ui@^0.5.15":
+  version "0.5.15"
+  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui/-/embed-ui-0.5.15.tgz#d6eaf9410c4d94dece0032d1cc631725679b40ed"
+  integrity sha512-tXAm6ZPydf/WysKZzCd2ymb0ZtXRYMSbtchrEYsL4lyh7LZojS8ylNfvGFPAZ0Xl81YWPc8kuEECWartJaO2SA==
   dependencies:
+    "@omnicajs/symfony-router" "^1.0.0"
     "@omnicajs/vue-remote" "^0.2.5"
     "@remote-ui/rpc" "^1.4.5"
-    "@retailcrm/embed-ui-v1-contexts" "^0.5.8"
-    "@retailcrm/embed-ui-v1-types" "^0.5.8"
+    "@retailcrm/embed-ui-v1-contexts" "^0.5.15"
+    "@retailcrm/embed-ui-v1-types" "^0.5.15"
+
+"@retailcrm/image-preview@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@retailcrm/image-preview/-/image-preview-1.0.2.tgz#46586610be7c441a7cf14015154d21fe046232e3"
+  integrity sha512-m8wX20M5svq9VXoQHCwZYp7ezjWXvvlbVSLdcdrsWkd+dkAfPUTD2xQMhAPciAnSIAlku216sedZSMlOn0vR0Q==
 
 "@rtsao/scc@^1.1.0":
   version "1.1.0"
