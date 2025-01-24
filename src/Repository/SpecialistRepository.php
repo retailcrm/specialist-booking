@@ -26,6 +26,7 @@ class SpecialistRepository extends ServiceEntityRepository
             ->andWhere('s.account = :account')
             ->setParameter('account', $account)
             ->orderBy('s.ordering', 'ASC')
+            ->addOrderBy('s.name', 'ASC')
             ->getQuery()
             ->getResult()
         ;
