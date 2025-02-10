@@ -45,8 +45,20 @@ class SpecialistController extends AbstractController
         $specialists = $this->specialistRepository->findByAccountOrderedByOrdering($account);
         $collectionModel = new SpecialistCollectionModel($specialists);
 
+        $stores = null;
+        if ($account->getSettings()->chooseStore()) {
+            $storesResponse = $this->accountManager->getClient()->references->stores()->stores;
+            $stores = [];
+            foreach ($storesResponse as $store) {
+                /* @phpstan-ignore-next-line nullsafe.neverNull */
+                $stores[$store->code] = $store->name . ($store->address?->city ? ' (' . $store->address->city . ')' : '');
+            }
+
+            asort($stores);
+        }
         $form = $this->createForm(SpecialistCollectionType::class, $collectionModel, [
             'account' => $account,
+            'stores' => $stores,
         ]);
         $form->handleRequest($request);
 
@@ -89,6 +101,7 @@ class SpecialistController extends AbstractController
 
                 $specialist->setSpecialty($specialistModel->specialty);
                 $specialist->setOrdering($specialistModel->ordering);
+                $specialist->setStoreCode($specialistModel->storeCode);
 
                 if ($specialistModel->photoFile) {
                     $originalFilename = pathinfo($specialistModel->photoFile->getClientOriginalName(), PATHINFO_FILENAME);

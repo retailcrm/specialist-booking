@@ -8,6 +8,7 @@ use App\Form\Model\SpecialistModel;
 use App\Repository\SpecialtyRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -20,6 +21,9 @@ class SpecialistType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $account = $options['account'];
+        assert($account instanceof Account);
+
         $builder
             ->add('id', HiddenType::class)
             ->add('name', TextType::class, [
@@ -29,10 +33,21 @@ class SpecialistType extends AbstractType
             ->add('specialty', EntityType::class, [
                 'class' => Specialty::class,
                 'choice_label' => 'name',
-                'query_builder' => fn (SpecialtyRepository $repo) => $repo->findByAccountOrderingByNameQueryBuilder($options['account']),
+                'query_builder' => fn (SpecialtyRepository $repo) => $repo->findByAccountOrderingByNameQueryBuilder($account),
                 'label' => 'specialty',
                 'required' => false,
             ])
+        ;
+
+        if ($account->getSettings()->chooseStore()) {
+            $builder->add('storeCode', ChoiceType::class, [
+                'choices' => array_flip($options['stores']),
+                'label' => 'branch',
+                'required' => false,
+            ]);
+        }
+
+        $builder
             ->add('ordering', IntegerType::class, [
                 'label' => 'ordering',
                 'required' => true,
@@ -57,8 +72,9 @@ class SpecialistType extends AbstractType
             ->setDefaults([
                 'data_class' => SpecialistModel::class,
             ])
-            ->setRequired('account')
+            ->setRequired(['account', 'stores'])
             ->setAllowedTypes('account', [Account::class])
+            ->setAllowedTypes('stores', ['array', 'null'])
         ;
     }
 }

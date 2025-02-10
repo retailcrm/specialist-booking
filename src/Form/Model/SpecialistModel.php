@@ -22,6 +22,8 @@ class SpecialistModel
 
     public ?UploadedFile $photoFile = null;
 
+    public ?string $storeCode = null;
+
     public function __construct(public ?int $id = null)
     {
     }
@@ -33,6 +35,7 @@ class SpecialistModel
         $specialistModel->specialty = $s->getSpecialty();
         $specialistModel->ordering = $s->getOrdering() ?? 99;
         $specialistModel->photo = $s->getPhoto();
+        $specialistModel->storeCode = $s->getStoreCode();
 
         return $specialistModel;
     }

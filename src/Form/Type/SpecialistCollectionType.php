@@ -17,6 +17,7 @@ class SpecialistCollectionType extends AbstractType
             'entry_type' => SpecialistType::class,
             'entry_options' => [
                 'account' => $options['account'],
+                'stores' => $options['stores'],
             ],
             'allow_add' => true,
             'allow_delete' => true,
@@ -32,8 +33,9 @@ class SpecialistCollectionType extends AbstractType
             ->setDefaults([
                 'data_class' => SpecialistCollectionModel::class,
             ])
-            ->setRequired('account')
+            ->setRequired(['account', 'stores'])
             ->setAllowedTypes('account', [Account::class])
+            ->setAllowedTypes('stores', ['array', 'null'])
         ;
     }
 }

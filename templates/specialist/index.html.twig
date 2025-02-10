@@ -15,6 +15,9 @@
                 {{ form_row(specialistForm.id) }}
                 {{ form_row(specialistForm.name) }}
                 {{ form_row(specialistForm.specialty) }}
+                {% if specialistForm.storeCode is defined %}
+                    {{ form_row(specialistForm.storeCode) }}
+                {% endif %}
                 {{ form_row(specialistForm.ordering) }}
 
                 {% if specialistForm.vars.data.photo %}

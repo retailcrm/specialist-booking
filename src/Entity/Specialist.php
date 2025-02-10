@@ -36,6 +36,9 @@ class Specialist
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?Specialty $specialty = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $storeCode = null;
+
     public function __construct(string $name)
     {
         $this->name = $name;
@@ -140,6 +143,18 @@ class Specialist
     public function setSpecialty(?Specialty $specialty): static
     {
         $this->specialty = $specialty;
+
+        return $this;
+    }
+
+    public function getStoreCode(): ?string
+    {
+        return $this->storeCode;
+    }
+
+    public function setStoreCode(?string $storeCode): static
+    {
+        $this->storeCode = $storeCode;
 
         return $this;
     }
