@@ -38,6 +38,12 @@ class AccountSettings
     #[ORM\Column(options: ['default' => 60])]
     private int $slotDuration = 60;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $chooseStore = false;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $chooseCity = false;
+
     public function setFromCrmSettings(Settings $settings): static
     {
         /* @phpstan-ignore-next-line */
@@ -154,6 +160,30 @@ class AccountSettings
     public function setSlotDuration(int $slotDuration): static
     {
         $this->slotDuration = $slotDuration;
+
+        return $this;
+    }
+
+    public function chooseStore(): bool
+    {
+        return $this->chooseStore;
+    }
+
+    public function setChooseStore(bool $chooseStore): static
+    {
+        $this->chooseStore = $chooseStore;
+
+        return $this;
+    }
+
+    public function chooseCity(): bool
+    {
+        return $this->chooseCity;
+    }
+
+    public function setChooseCity(bool $chooseCity): static
+    {
+        $this->chooseCity = $chooseCity;
 
         return $this;
     }

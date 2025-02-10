@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Form\Model\TimeSlotModel;
-use App\Form\Type\TimeSlotType;
+use App\Form\Model\AccountSettingsModel;
+use App\Form\Type\AccountSettingsType;
 use App\Service\AccountManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +23,7 @@ class SettingsController extends AbstractController
         name: 'account_settings_index',
         methods: ['GET', 'POST'],
     )]
-    public function settings(): Response
+    public function index(): Response
     {
         if (!$this->accountManager->hasAccount()) {
             throw $this->createNotFoundException();
@@ -31,42 +31,52 @@ class SettingsController extends AbstractController
 
         $systemInfo = $this->accountManager->getClient()->api->systemInfo();
 
-        return $this->render('account/settings.html.twig', [
+        return $this->render('account/index.html.twig', [
             'account' => $this->accountManager->getAccount(),
             'publicUrl' => $systemInfo->publicUrl,
         ]);
     }
 
     #[Route(
-        path: '/settings/working-time',
-        name: 'account_settings_working_time',
+        path: '/settings/details',
+        name: 'account_settings_settings',
         methods: ['GET', 'POST'],
     )]
-    public function workingTime(Request $request, EntityManagerInterface $em): Response
+    public function settings(Request $request, EntityManagerInterface $em): Response
     {
         if (!$this->accountManager->hasAccount()) {
             throw $this->createNotFoundException();
         }
         $account = $this->accountManager->getAccount();
 
-        $timeSlotModel = new TimeSlotModel();
-        $timeSlotModel->length = $account->getSettings()->getSlotDuration();
-        $timeSlotForm = $this->createForm(TimeSlotType::class, $timeSlotModel);
+        $accountSettingsModel = new AccountSettingsModel();
+        $accountSettingsModel->length = $account->getSettings()->getSlotDuration();
+        $accountSettingsModel->chooseStore = $account->getSettings()->chooseStore();
+        $accountSettingsModel->chooseCity = $account->getSettings()->chooseCity();
+        $accountSettingsForm = $this->createForm(AccountSettingsType::class, $accountSettingsModel);
 
-        $timeSlotForm->handleRequest($request);
-        if ($timeSlotForm->isSubmitted() && $timeSlotForm->isValid()) {
-            $account->getSettings()->setSlotDuration($timeSlotModel->length);
+        $accountSettingsForm->handleRequest($request);
+        if ($accountSettingsForm->isSubmitted() && $accountSettingsForm->isValid()) {
+            if (!$accountSettingsModel->chooseStore) {
+                $accountSettingsModel->chooseCity = false;
+            }
+
+            $account->getSettings()
+                ->setSlotDuration($accountSettingsModel->length)
+                ->setChooseStore($accountSettingsModel->chooseStore)
+                ->setChooseCity($accountSettingsModel->chooseCity)
+            ;
             $em->flush();
 
-            return $this->redirectToRoute('account_settings_working_time');
+            return $this->redirectToRoute('account_settings_settings');
         }
 
         $systemInfo = $this->accountManager->getClient()->api->systemInfo();
 
-        return $this->render('account/workingTime.html.twig', [
+        return $this->render('account/settings.html.twig', [
             'account' => $account,
             'publicUrl' => $systemInfo->publicUrl,
-            'timeSlotForm' => $timeSlotForm,
+            'settingsForm' => $accountSettingsForm,
         ]);
     }
 }

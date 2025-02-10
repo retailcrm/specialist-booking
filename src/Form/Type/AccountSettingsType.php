@@ -2,14 +2,15 @@
 
 namespace App\Form\Type;
 
-use App\Form\Model\TimeSlotModel;
+use App\Form\Model\AccountSettingsModel;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TimeSlotType extends AbstractType
+class AccountSettingsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -24,6 +25,14 @@ class TimeSlotType extends AbstractType
                     'max' => 360,
                 ],
             ])
+            ->add('chooseStore', CheckboxType::class, [
+                'label' => 'choose_store_label',
+                'required' => false,
+            ])
+            ->add('chooseCity', CheckboxType::class, [
+                'label' => 'choose_city_label',
+                'required' => false,
+            ])
             ->add('save', SubmitType::class, [
                 'label' => 'save',
             ])
@@ -33,7 +42,7 @@ class TimeSlotType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => TimeSlotModel::class,
+            'data_class' => AccountSettingsModel::class,
         ]);
     }
 }

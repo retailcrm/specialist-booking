@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{# @var account \App\Entity\Account #}
+
+{% block body %}
+    <dl class="row">
+        <dt class="col-sm-2">{{ 'account'|trans }}</dt>
+        <dd class="col-sm-10"><a href="{{ publicUrl }}">{{ publicUrl }}</a></dd>
+
+        <dt class="col-sm-2">Client ID</dt>
+        <dd class="col-sm-10"><code>{{ account.clientId }}</code></dd>
+
+        <dt class="col-sm-2">{{ 'active'|trans }}</dt>
+        <dd class="col-sm-10">
+            {% if account.active %}
+                <span class="text-success">{{ 'yes'|trans }}</span>
+            {% else %}
+                <span class="text-danger">{{ 'no'|trans }}</span>
+            {% endif %}
+        </dd>
+
+        <dt class="col-sm-2">{{ 'frozen'|trans }}</dt>
+        <dd class="col-sm-10">
+            {% if account.frozen %}
+                <span class="text-danger">{{ 'yes'|trans }}</span>
+            {% else %}
+                <span class="text-success">{{ 'no'|trans }}</span>
+            {% endif %}
+        </dd>
+    </dl>
+
+    <h3>{{ 'settings'|trans }}</h3>
+    <a href="{{ path('specialty_index') }}"><button type="button" class="btn btn-outline-dark">{{ 'specialties'|trans }}</button></a>
+    <a href="{{ path('specialist_index') }}"><button type="button" class="btn btn-outline-dark">{{ 'specialists'|trans }}</button></a>
+    <a href="{{ path('account_settings_settings') }}"><button type="button" class="btn btn-outline-dark">{{ 'settings'|trans }}</button></a>
+{% endblock %}
