@@ -48,7 +48,7 @@
                         v-for="time in specialist.nearestSlots.slots"
                         :key="time"
                         appearance="outlined"
-                        @click="$emit('select-slot', specialist, specialist.nearestSlots.date, time)"
+                        @click="handleSlotSelect(specialist, time)"
                     >
                         {{ time }}
                     </UiButton>
@@ -74,7 +74,7 @@ const props = defineProps<{
     branchCode?: string
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
     (e: 'select-specialist', specialist: Specialist): void
     (e: 'select-slot', specialist: Specialist, date: string, time: string): void
     (e: 'back'): void
@@ -86,6 +86,12 @@ const host = useHost()
 const specialists = ref<Specialist[]>([])
 const loading = ref(false)
 const errors = ref<string[]>([])
+
+const handleSlotSelect = (specialist: Specialist, time: string) => {
+    if (specialist.nearestSlots?.date) {
+        emit('select-slot', specialist, specialist.nearestSlots.date, time)
+    }
+}
 
 const loadSpecialists = async () => {
     loading.value = true
