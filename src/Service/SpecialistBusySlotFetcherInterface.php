@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Specialist;
+use RetailCrm\Api\Model\Entity\References\Store;
 
 interface SpecialistBusySlotFetcherInterface
 {
@@ -29,4 +30,9 @@ interface SpecialistBusySlotFetcherInterface
      * @return int in minutes
      */
     public function getSlotDuration(): int;
+
+    /**
+     * @return Store[]
+     */
+    public function getStores(): array;
 }

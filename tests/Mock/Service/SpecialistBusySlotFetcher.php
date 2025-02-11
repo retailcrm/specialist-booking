@@ -5,6 +5,8 @@ namespace App\Tests\Mock\Service;
 use App\Entity\Specialist;
 use App\Service\DTO\DaySlots;
 use App\Service\SpecialistBusySlotFetcherInterface;
+use RetailCrm\Api\Model\Entity\References\Store;
+use RetailCrm\Api\Model\Entity\References\StoreAddress;
 
 class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterface
 {
@@ -59,5 +61,34 @@ class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterface
     public function getSlotDuration(): int
     {
         return 60;
+    }
+
+    public function getStores(): array
+    {
+        $s1a = new StoreAddress();
+        $s1a->city = 'Moscow';
+        $s2a = new StoreAddress();
+        $s2a->city = 'Tula';
+
+        $s1 = new Store();
+        $s1->code = 'store1';
+        $s1->name = 'Store 1';
+        $s1->address = $s1a;
+
+        $s2 = new Store();
+        $s2->code = 'store2';
+        $s2->name = 'Store 2';
+        $s2->address = $s1a;
+
+        $s3 = new Store();
+        $s3->code = 'store3';
+        $s3->name = 'Store 3';
+        $s3->address = $s2a;
+
+        $s4 = new Store();
+        $s4->code = 'store4';
+        $s4->name = 'Store 4';
+
+        return [$s1, $s2, $s3, $s4];
     }
 }

@@ -1,4 +1,14 @@
 <template>
+    <UiButton
+        v-if="showBackButton"
+        appearance="tertiary"
+        :class="$style.back"
+        @click="$emit('back')"
+    >
+        <IconBack class="UiIcon-icon-2pR-" />
+        {{ t('back_to_branches') }}
+    </UiButton>
+    
     <div :class="$style.container">
         <UiLoader :class="{ [$style.hide]: !loading }" :overlay="false" />
 
@@ -50,22 +60,27 @@
 
 <script setup lang="ts">
 import { UiButton, UiAvatar, UiLoader, UiError } from '@retailcrm/embed-ui-v1-components/remote'
+import IconBack from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/arrow-backward.svg'
 import { format } from 'date-fns'
 import { enGB, es, ru } from 'date-fns/locale'
 import type { Specialist } from '../types'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useHost } from '@retailcrm/embed-ui'
 
 const props = defineProps<{
     currentSpecialist: string | null
     t: (key: string) => string
     locale: string
+    branchCode?: string
 }>()
 
 defineEmits<{
     (e: 'select-specialist', specialist: Specialist): void
     (e: 'select-slot', specialist: Specialist, date: string, time: string): void
+    (e: 'back'): void
 }>()
+
+const showBackButton = computed(() => !!props.branchCode)
 
 const host = useHost()
 const specialists = ref<Specialist[]>([])
@@ -75,7 +90,8 @@ const errors = ref<string[]>([])
 const loadSpecialists = async () => {
     loading.value = true
 
-    const { body, status } = await host.httpCall('/embed/api/specialists')
+    const payload = props.branchCode ? { branch_code: props.branchCode } : {}
+    const { body, status } = await host.httpCall('/embed/api/specialists', payload)
     if (status === 200) {
         specialists.value = JSON.parse(body).specialists as Array<Specialist>
     } else {
@@ -109,6 +125,10 @@ const formatDate = (date: string) => {
 
 @blue-transparent: rgba(232, 241, 255, 1);
 @gray-border: #dee2e6;
+
+.back {
+    margin-bottom: 16px;
+}
 
 .container {
   display: flex;

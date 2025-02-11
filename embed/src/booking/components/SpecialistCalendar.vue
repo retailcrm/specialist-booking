@@ -2,7 +2,7 @@
     <div :class="$style.container">
         <UiButton appearance="tertiary" @click="$emit('back')">
             <IconBack class="UiIcon-icon-2pR-" />
-            {{ t('back') }}
+            {{ t('back_to_specialists') }}
         </UiButton>
 
         <div v-if="specialist" :class="$style.specialist_info">

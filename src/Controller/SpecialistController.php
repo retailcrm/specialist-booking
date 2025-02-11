@@ -9,6 +9,7 @@ use App\Form\Type\SpecialistCollectionType;
 use App\Repository\SpecialistRepository;
 use App\Service\AccountManager;
 use App\Service\CustomFieldManager;
+use App\Service\SpecialistBusySlotFetcherInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Gaufrette\Extras\Resolvable\ResolvableFilesystem;
 use Gaufrette\Filesystem;
@@ -36,6 +37,7 @@ class SpecialistController extends AbstractController
         #[Autowire('@specialist_photos_filesystem')]
         Filesystem $specialistPhotosFilesystem,
         ResolvableFilesystem $fileSystem,
+        SpecialistBusySlotFetcherInterface $specialistBusySlotFetcher,
     ): Response {
         if (!$this->accountManager->hasAccount()) {
             throw $this->createNotFoundException();
@@ -47,9 +49,8 @@ class SpecialistController extends AbstractController
 
         $stores = null;
         if ($account->getSettings()->chooseStore()) {
-            $storesResponse = $this->accountManager->getClient()->references->stores()->stores;
             $stores = [];
-            foreach ($storesResponse as $store) {
+            foreach ($specialistBusySlotFetcher->getStores() as $store) {
                 /* @phpstan-ignore-next-line nullsafe.neverNull */
                 $stores[$store->code] = $store->name . ($store->address?->city ? ' (' . $store->address->city . ')' : '');
             }

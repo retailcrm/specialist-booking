@@ -107,6 +107,11 @@ final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetc
         return $this->getSettings()->getSlotDuration();
     }
 
+    public function getStores(): array
+    {
+        return $this->accountManager->getClient()->references->stores()->stores;
+    }
+
     private function updateSettings(): void
     {
         $crmSettings = $this->accountManager->getClient()->settings->get()->settings;

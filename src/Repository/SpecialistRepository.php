@@ -20,13 +20,40 @@ class SpecialistRepository extends ServiceEntityRepository
     /**
      * @return Specialist[]
      */
-    public function findByAccountOrderedByOrdering(Account $account): array
+    public function findByAccountOrderedByOrdering(Account $account, ?string $storeCode = null): array
     {
-        return $this->createQueryBuilder('s')
+        $qb = $this->createQueryBuilder('s')
             ->andWhere('s.account = :account')
             ->setParameter('account', $account)
             ->orderBy('s.ordering', 'ASC')
             ->addOrderBy('s.name', 'ASC')
+        ;
+
+        if (null !== $storeCode) {
+            $qb
+                ->andWhere('s.storeCode = :storeCode')
+                ->setParameter('storeCode', $storeCode)
+            ;
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return array<array{code: string, cnt: int}>
+     */
+    public function getStoreCodes(Account $account): array
+    {
+        return $this->createQueryBuilder('s')
+            ->select('s.storeCode as code, COUNT(s.id) as cnt')
+            ->where('s.storeCode IS NOT NULL')
+            ->andWhere('s.account = :account')
+            ->setParameter('account', $account)
+            ->groupBy('s.storeCode')
+            ->orderBy('cnt', 'DESC')
             ->getQuery()
             ->getResult()
         ;
