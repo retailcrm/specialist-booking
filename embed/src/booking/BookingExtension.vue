@@ -8,39 +8,27 @@
         <UiModalSidebar
             v-model:opened="showBookingSidebar"
             :closable="true"
-            @update:opened="onSidebarOpened"
         >
             <template #title>
                 {{ t('title') }}
             </template>
             
-            <UiLoader :class="{ [$style.hide]: !loading }" :overlay="false" />
-            
-            <UiError
-                v-for="(error, index) in errors"
-                :key="index"
-                :message="error"
+            <SpecialistsList
+                v-if="currentView === 'specialists'"
+                :current-specialist="customFieldSpecialist"
+                :t="t"
+                :locale="locale"
+                @select-slot="handleSpecialistSlotSelect"
+                @select-specialist="handleSpecialistSelect"
             />
-            
-            <template v-if="errors.length === 0">
-                <SpecialistsList
-                    v-if="currentView === 'specialists'"
-                    :current-specialist="customFieldSpecialist"
-                    :specialists="specialists"
-                    :t="t"
-                    :locale="locale"
-                    @select-slot="handleSpecialistSlotSelect"
-                    @select-specialist="handleSpecialistSelect"
-                />
-                <SpecialistCalendar
-                    v-else
-                    :specialist="selectedSpecialist"
-                    :t="t"
-                    :locale="locale"
-                    @select-slot="handleSlotSelect"
-                    @back="currentView = 'specialists'"
-                />
-            </template>
+            <SpecialistCalendar
+                v-else
+                :specialist="selectedSpecialist"
+                :t="t"
+                :locale="locale"
+                @select-slot="handleSlotSelect"
+                @back="currentView = 'specialists'"
+            />
 
             <template #footer>
                 <UiButton appearance="secondary" @click="showBookingSidebar = false">
@@ -54,9 +42,9 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import IconCalendar from  '@retailcrm/embed-ui-v1-components/assets/sprites/actions/calendar-month.svg'
-import { UiToolbarButton, UiModalSidebar, UiButton, UiError, UiLoader } from '@retailcrm/embed-ui-v1-components/remote'
+import { UiToolbarButton, UiModalSidebar, UiButton } from '@retailcrm/embed-ui-v1-components/remote'
 import { useI18n } from 'vue-i18n'
-import { useSettingsContext as useSettings, useField, useHost, useCustomField } from '@retailcrm/embed-ui'
+import { useSettingsContext as useSettings, useField, useCustomField } from '@retailcrm/embed-ui'
 import { useContext } from '@retailcrm/embed-ui-v1-contexts/remote/custom'
 import SpecialistsList from './components/SpecialistsList.vue'
 import SpecialistCalendar from './components/SpecialistCalendar.vue'
@@ -78,35 +66,11 @@ const showBookingSidebar = ref(false)
 const currentView = ref<'specialists' | 'calendar'>('specialists')
 const selectedSpecialist = ref<Specialist | null>(null)
 
-const host = useHost()
-
-// data
-const loading = ref(false)
-const specialists = ref<Specialist[]>([])
-const errors = ref<string[]>([])
-
 // custom fields
 const custom = useContext('order')
 custom.initialize()
 const customFieldSpecialist = useCustomField(custom, CustomFieldSpecialistCode, { kind: 'dictionary' })
 const customFieldDateTime = useCustomField(custom, CustomFieldSpecialistDateTimeCode, { kind: 'datetime' })
-
-const onSidebarOpened = async (opened: boolean) => {
-    if (!opened) {
-        return
-    }
-    
-    loading.value = true
-    
-    const { body, status } = await host.httpCall('/embed/api/specialists')
-    if (status === 200) {
-        specialists.value = JSON.parse(body).specialists as Array<Specialist>
-    } else {
-        errors.value = ['Error of loading: ' + body]
-    }
-    
-    loading.value = false
-}
 
 const handleSpecialistSelect = (specialist: Specialist) => {
     selectedSpecialist.value = specialist
@@ -159,10 +123,6 @@ const setToCustomFields = (date: string, time: string) => {
 </i18n>
 
 <style lang="less" module>
-.hide {
-    display: none !important;
-}
-
 .container {
   display: flex;
   flex-direction: column;

@@ -5,7 +5,7 @@
             {{ t('back') }}
         </UiButton>
 
-        <div :class="$style.specialist_info">
+        <div v-if="specialist" :class="$style.specialist_info">
             <UiAvatar
                 :src="specialist.photo"
                 :name="specialist.name"
@@ -93,7 +93,7 @@ import { enGB, es, ru } from 'date-fns/locale'
 import type { Specialist } from '../types'
 
 const props = defineProps<{
-    specialist: Specialist
+    specialist: Specialist | null
     t: (key: string) => string
     locale: string
 }>()
@@ -117,6 +117,10 @@ const locales = {
 }
 
 const loadSlots = async () => {
+    if (!props.specialist) {
+        return
+    }
+
     const { body, status } = await host.httpCall(`/embed/api/specialists/${props.specialist.id}/slots`, {
         current_date: formatDateKey(currentDate.value),
     })

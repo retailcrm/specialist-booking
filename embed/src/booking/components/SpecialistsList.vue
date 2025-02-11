@@ -1,5 +1,13 @@
 <template>
     <div :class="$style.container">
+        <UiLoader :class="{ [$style.hide]: !loading }" :overlay="false" />
+
+        <UiError
+            v-for="(error, index) in errors"
+            :key="index"
+            :message="error"
+        />
+
         <div
             v-for="specialist in specialists"
             :key="specialist.id"
@@ -21,7 +29,7 @@
                 </div>
             </div>
 
-            <div :class="$style.slots">
+            <div v-if="specialist.nearestSlots" :class="$style.slots">
                 <div :class="$style.date">
                     {{ formatDate(specialist.nearestSlots.date) }}
                 </div>
@@ -41,14 +49,15 @@
 </template>
 
 <script setup lang="ts">
-import { UiButton, UiAvatar } from '@retailcrm/embed-ui-v1-components/remote'
+import { UiButton, UiAvatar, UiLoader, UiError } from '@retailcrm/embed-ui-v1-components/remote'
 import { format } from 'date-fns'
 import { enGB, es, ru } from 'date-fns/locale'
 import type { Specialist } from '../types'
+import { ref, onMounted } from 'vue'
+import { useHost } from '@retailcrm/embed-ui'
 
 const props = defineProps<{
     currentSpecialist: string | null
-    specialists: Specialist[]
     t: (key: string) => string
     locale: string
 }>()
@@ -57,6 +66,28 @@ defineEmits<{
     (e: 'select-specialist', specialist: Specialist): void
     (e: 'select-slot', specialist: Specialist, date: string, time: string): void
 }>()
+
+const host = useHost()
+const specialists = ref<Specialist[]>([])
+const loading = ref(false)
+const errors = ref<string[]>([])
+
+const loadSpecialists = async () => {
+    loading.value = true
+
+    const { body, status } = await host.httpCall('/embed/api/specialists')
+    if (status === 200) {
+        specialists.value = JSON.parse(body).specialists as Array<Specialist>
+    } else {
+        errors.value = ['Error of loading: ' + body]
+    }
+
+    loading.value = false
+}
+
+onMounted(async () => {
+    await loadSpecialists()
+})
 
 const locales = {
     'en-GB': enGB,
@@ -72,6 +103,10 @@ const formatDate = (date: string) => {
 </script>
 
 <style lang="less" module>
+.hide {
+    display: none !important;
+}
+
 @blue-transparent: rgba(232, 241, 255, 1);
 @gray-border: #dee2e6;
 
