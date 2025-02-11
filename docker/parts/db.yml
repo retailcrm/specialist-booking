@@ -1,0 +1,12 @@
+volumes:
+    postgres:
+
+services:
+    postgres:
+        image: postgres:16-alpine
+        volumes:
+            - "postgres:/var/lib/postgresql/data"
+        environment:
+            POSTGRES_DB: booking_test
+            POSTGRES_USER: booking
+            POSTGRES_PASSWORD: booking
