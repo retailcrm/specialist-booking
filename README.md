@@ -35,6 +35,7 @@ make start
 Запуск линтеров и тестов
 ```shell
 make check
+APP_ENV=test make db-create db-migrate
 APP_ENV=test make phpunit
 make twig-lint
 make yaml-lint
