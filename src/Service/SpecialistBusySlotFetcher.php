@@ -6,6 +6,7 @@ use App\Entity\AccountSettings;
 use App\Entity\Specialist;
 use App\Service\DTO\DaySlots;
 use Doctrine\ORM\EntityManagerInterface;
+use RetailCrm\Api\Model\Entity\References\Store;
 use RetailCrm\Api\Model\Filter\Orders\OrderFilter;
 use RetailCrm\Api\Model\Request\Orders\OrdersRequest;
 
@@ -109,7 +110,10 @@ final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetc
 
     public function getStores(): array
     {
-        return $this->accountManager->getClient()->references->stores()->stores;
+        return array_filter(
+            $this->accountManager->getClient()->references->stores()->stores,
+            fn (Store $store) => $store->active,
+        );
     }
 
     private function updateSettings(): void

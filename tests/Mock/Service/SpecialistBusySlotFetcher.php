@@ -74,20 +74,24 @@ class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterface
         $s1->code = 'store1';
         $s1->name = 'Store 1';
         $s1->address = $s1a;
+        $s1->active = true;
 
         $s2 = new Store();
         $s2->code = 'store2';
         $s2->name = 'Store 2';
         $s2->address = $s1a;
+        $s2->active = true;
 
         $s3 = new Store();
         $s3->code = 'store3';
         $s3->name = 'Store 3';
         $s3->address = $s2a;
+        $s3->active = true;
 
         $s4 = new Store();
         $s4->code = 'store4';
         $s4->name = 'Store 4';
+        $s4->active = true;
 
         return [$s1, $s2, $s3, $s4];
     }
