@@ -45,3 +45,23 @@
             </button></a>
     </div>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chooseStoreCheckbox = document.getElementById('account_settings_chooseStore');
+            const chooseCityDiv = document.getElementById('account_settings_chooseCity').closest('div.mb-3');
+
+            function updateCityVisibility() {
+                chooseCityDiv.style.display = chooseStoreCheckbox.checked ? 'block' : 'none';
+            }
+
+            // Initial state
+            updateCityVisibility();
+
+            // Add event listener for changes
+            chooseStoreCheckbox.addEventListener('change', updateCityVisibility);
+        });
+    </script>
+{% endblock %}

@@ -28,10 +28,18 @@ class AccountSettingsType extends AbstractType
             ->add('chooseStore', CheckboxType::class, [
                 'label' => 'choose_store_label',
                 'required' => false,
+                'help' => 'choose_store_help',
+                'help_html' => true,
+                'help_translation_parameters' => ['%public_url%' => $options['public_url']],
+                'translation_domain' => null,
             ])
             ->add('chooseCity', CheckboxType::class, [
                 'label' => 'choose_city_label',
                 'required' => false,
+                'help' => 'choose_city_help',
+                'help_html' => true,
+                'help_translation_parameters' => ['%public_url%' => $options['public_url']],
+                'translation_domain' => null,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'save',
@@ -41,8 +49,12 @@ class AccountSettingsType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'data_class' => AccountSettingsModel::class,
-        ]);
+        $resolver
+            ->setDefaults([
+                'data_class' => AccountSettingsModel::class,
+            ])
+            ->setRequired('public_url')
+            ->setAllowedTypes('public_url', 'string')
+        ;
     }
 }

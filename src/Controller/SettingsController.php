@@ -47,13 +47,18 @@ class SettingsController extends AbstractController
         if (!$this->accountManager->hasAccount()) {
             throw $this->createNotFoundException();
         }
+
         $account = $this->accountManager->getAccount();
+        $systemInfo = $this->accountManager->getClient()->api->systemInfo();
 
         $accountSettingsModel = new AccountSettingsModel();
         $accountSettingsModel->length = $account->getSettings()->getSlotDuration();
         $accountSettingsModel->chooseStore = $account->getSettings()->chooseStore();
         $accountSettingsModel->chooseCity = $account->getSettings()->chooseCity();
-        $accountSettingsForm = $this->createForm(AccountSettingsType::class, $accountSettingsModel);
+
+        $accountSettingsForm = $this->createForm(AccountSettingsType::class, $accountSettingsModel, [
+            'public_url' => $systemInfo->publicUrl,
+        ]);
 
         $accountSettingsForm->handleRequest($request);
         if ($accountSettingsForm->isSubmitted() && $accountSettingsForm->isValid()) {
@@ -70,8 +75,6 @@ class SettingsController extends AbstractController
 
             return $this->redirectToRoute('account_settings_settings');
         }
-
-        $systemInfo = $this->accountManager->getClient()->api->systemInfo();
 
         return $this->render('account/settings.html.twig', [
             'account' => $account,
