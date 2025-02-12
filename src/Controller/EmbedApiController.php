@@ -85,10 +85,13 @@ class EmbedApiController extends AbstractController
         SpecialistSchedule $specialistSchedule,
         ResolvableFilesystem $fileSystem,
     ): Response {
-        try {
-            $payload = $jsonStringHandler->handle($request, 'payload');
-        } catch (JsonStringException $e) {
-            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        $payload = null;
+        if ($request->request->has('payload')) {
+            try {
+                $payload = $jsonStringHandler->handle($request, 'payload');
+            } catch (JsonStringException $e) {
+                return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            }
         }
 
         $branchCode = $payload['branch_code'] ?? null;
@@ -124,10 +127,13 @@ class EmbedApiController extends AbstractController
         JsonStringHandler $jsonStringHandler,
         SpecialistBusySlotFetcherInterface $specialistBusySlotFetcher,
     ): Response {
-        try {
-            $payload = $jsonStringHandler->handle($request, 'payload');
-        } catch (JsonStringException $e) {
-            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        $payload = null;
+        if ($request->request->has('payload')) {
+            try {
+                $payload = $jsonStringHandler->handle($request, 'payload');
+            } catch (JsonStringException $e) {
+                return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+            }
         }
 
         $city = $payload['city'] ?? null;
