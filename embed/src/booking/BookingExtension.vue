@@ -1,11 +1,12 @@
 <template>
     <div>
-        <UiToolbarButton @click="showBookingSidebar = true">
+        <UiToolbarButton @click="openBookingSidebar">
             <IconCalendar class="UiIcon-icon-2pR-" />
             {{ t('button') }}
         </UiToolbarButton>
     
         <UiModalSidebar
+            v-if="isBookingSidebarInitialized"
             v-model:opened="showBookingSidebar"
             :closable="true"
         >
@@ -57,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import IconCalendar from  '@retailcrm/embed-ui-v1-components/assets/sprites/actions/calendar-month.svg'
 import { UiToolbarButton, UiModalSidebar, UiButton } from '@retailcrm/embed-ui-v1-components/remote'
 import { useI18n } from 'vue-i18n'
@@ -82,6 +83,7 @@ watch(locale, locale => i18n.locale.value = locale, { immediate: true })
 
 // component logic
 const showBookingSidebar = ref(false)
+const isBookingSidebarInitialized = ref(false)
 const currentView = ref<'city' | 'branch' | 'specialists' | 'calendar'>('city')
 const selectedSpecialist = ref<Specialist | null>(null)
 const selectedCity = ref<string | null>(null)
@@ -109,6 +111,15 @@ const loadSettings = async () => {
             currentView.value = 'specialists'
         }
     }
+}
+
+const openBookingSidebar = async () => {
+    if (!isBookingSidebarInitialized.value) {
+        await loadSettings()
+        isBookingSidebarInitialized.value = true
+    }
+
+    showBookingSidebar.value = true
 }
 
 const handleCitySelect = (city: string) => {
@@ -143,9 +154,6 @@ const setToCustomFields = (date: string, time: string) => {
     customFieldDateTime.value = new Date(`${date}T${time}`).toISOString()
 }
 
-onMounted(async () => {
-    await loadSettings()
-})
 </script>
 
 <i18n locale="en-GB">
