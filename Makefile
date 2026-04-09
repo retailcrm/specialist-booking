@@ -70,5 +70,11 @@ js-lint:
 	@cd embed && make lint
 
 zip-archive: node-modules js-build
-	@read -p "Enter new version (integer): " VERSION; \
+	@VERSION="$${VERSION}"; \
+	if [ -z "$$VERSION" ]; then \
+		read -p "Enter new version (integer): " VERSION; \
+	fi; \
+	case "$$VERSION" in \
+		''|*[!0-9]*) echo "VERSION should be a positive integer" >&2; exit 1 ;; \
+	esac; \
 	$(PHP) bin/console app:embed:zip $$VERSION
