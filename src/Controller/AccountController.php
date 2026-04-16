@@ -232,9 +232,10 @@ class AccountController extends AbstractController
 
         if (!$account->isSimpleConnection()) {
             $embedJsConfiguration = new EmbedJsConfiguration();
-            $embedJsConfiguration->entrypoint = EmbedStatic::EMBED_JS_PATH . '/index.html';
-            $embedJsConfiguration->stylesheet = $this->generateUrl('embed_static', ['path' => 'booking.css']);
+            $embedJsConfiguration->entrypoint = EmbedStatic::SCRIPT_PATH;
+            $embedJsConfiguration->stylesheet = EmbedStatic::STYLESHEET_PATH;
             $embedJsConfiguration->targets = EmbedStatic::TARGETS;
+            $embedJsConfiguration->runner = EmbedStatic::RUNNER;
 
             $integrations = new Integrations();
             $integrations->embedJs = $embedJsConfiguration;

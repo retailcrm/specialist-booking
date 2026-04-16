@@ -126,6 +126,14 @@ const rules = [{
     test: /\.m?js/,
     resolve: { fullySpecified: false },
 }, {
+    enforce: 'post',
+    resourceQuery: /vue.*type=(?:template|script|scriptSetup)/,
+    loader: '@omnicajs/vue-remote/webpack-loader',
+}, {
+    enforce: 'post',
+    test: /\.remote\.(?:[cm]?[jt]sx?|vue)$/,
+    loader: '@omnicajs/vue-remote/webpack-loader',
+}, {
     test: /\.m?jsx?$/,
     exclude: /node_modules/,
     use: [babelLoader],
@@ -158,6 +166,8 @@ const rules = [{
     test: /\.vue$/,
     use: [{
         loader: 'vue-loader',
+    }, {
+        loader: '@omnicajs/vue-remote/webpack-loader',
     }],
 }, {
     resourceQuery: /blockType=i18n/,

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7046b05221341f279ec97b48933f0ac2",
+    "content-hash": "fe947362caeb403f5b5641d98de7685b",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2385,6 +2385,71 @@
             "time": "2024-09-04T18:46:31+00:00"
         },
         {
+            "name": "nelmio/cors-bundle",
+            "version": "2.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nelmio/NelmioCorsBundle.git",
+                "reference": "3d80dbcd5d1eb5f8b20ed5199e1778d44c2e4d1c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nelmio/NelmioCorsBundle/zipball/3d80dbcd5d1eb5f8b20ed5199e1778d44c2e4d1c",
+                "reference": "3d80dbcd5d1eb5f8b20ed5199e1778d44c2e4d1c",
+                "shasum": ""
+            },
+            "require": {
+                "psr/log": "^1.0 || ^2.0 || ^3.0",
+                "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.11.5",
+                "phpstan/phpstan-deprecation-rules": "^1.2.0",
+                "phpstan/phpstan-phpunit": "^1.4",
+                "phpstan/phpstan-symfony": "^1.4.4",
+                "phpunit/phpunit": "^8"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nelmio\\CorsBundle\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nelmio",
+                    "homepage": "http://nelm.io"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://github.com/nelmio/NelmioCorsBundle/contributors"
+                }
+            ],
+            "description": "Adds CORS (Cross-Origin Resource Sharing) headers support in your Symfony application",
+            "keywords": [
+                "api",
+                "cors",
+                "crossdomain"
+            ],
+            "support": {
+                "issues": "https://github.com/nelmio/NelmioCorsBundle/issues",
+                "source": "https://github.com/nelmio/NelmioCorsBundle/tree/2.6.1"
+            },
+            "time": "2026-01-12T15:59:08+00:00"
+        },
+        {
             "name": "neur0toxine/psr.http-client-implementation.php-http-curl",
             "version": "1.1",
             "source": {
@@ -3526,20 +3591,20 @@
         },
         {
             "name": "retailcrm/api-client-php",
-            "version": "v6.15.12",
+            "version": "v6.15.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/retailcrm/api-client-php.git",
-                "reference": "27e9e8eaa57d96496a27d9e5a7c4589a915e0477"
+                "reference": "315cdd8b647d56f4223cdf8bb2c56099624311a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/retailcrm/api-client-php/zipball/27e9e8eaa57d96496a27d9e5a7c4589a915e0477",
-                "reference": "27e9e8eaa57d96496a27d9e5a7c4589a915e0477",
+                "url": "https://api.github.com/repos/retailcrm/api-client-php/zipball/315cdd8b647d56f4223cdf8bb2c56099624311a8",
+                "reference": "315cdd8b647d56f4223cdf8bb2c56099624311a8",
                 "shasum": ""
             },
             "require": {
-                "civicrm/composer-compile-plugin": "^0.20",
+                "civicrm/composer-compile-plugin": "~0.20",
                 "doctrine/annotations": "^1.13|^2.0",
                 "ext-json": "*",
                 "liip/serializer": "2.2.* || 2.6.*",
@@ -3625,9 +3690,9 @@
             "support": {
                 "email": "support@retailcrm.pro",
                 "issues": "https://github.com/retailcrm/api-client-php/issues",
-                "source": "https://github.com/retailcrm/api-client-php/tree/v6.15.12"
+                "source": "https://github.com/retailcrm/api-client-php/tree/v6.15.25"
             },
-            "time": "2025-01-14T06:23:27+00:00"
+            "time": "2026-04-20T07:39:41+00:00"
         },
         {
             "name": "symfony/asset",
@@ -12286,7 +12351,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -12294,6 +12359,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

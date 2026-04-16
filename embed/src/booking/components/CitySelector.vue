@@ -19,6 +19,7 @@
                         <div :class="$style.name">
                             {{ city.name }}
                         </div>
+
                         <div :class="$style.branch_count">
                             {{ t('branch', city.branchCount) }}
                         </div>
@@ -29,11 +30,17 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { UiLoader, UiError } from '@retailcrm/embed-ui-v1-components/remote'
-import { ref, onMounted } from 'vue'
-import { useHost } from '@retailcrm/embed-ui'
+<script lang="ts" remote setup>
 import type { City } from '../types'
+
+import {
+    UiLoader,
+    UiError,
+} from '@retailcrm/embed-ui-v1-components/remote'
+
+import { onMounted } from 'vue'
+import { ref } from 'vue'
+import { useHost } from '@retailcrm/embed-ui'
 
 defineProps<{
     selectedCity: string | null,

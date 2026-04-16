@@ -11,6 +11,10 @@ final class EmbedStatic
 {
     public const array TARGETS = ['order/card:customer.after'];
     public const string EMBED_JS_PATH = '/embed/booking';
+    public const string ENTRY_NAME = 'booking';
+    public const string RUNNER = 'worker';
+    public const string SCRIPT_PATH = self::EMBED_JS_PATH . '/' . self::ENTRY_NAME . '.js';
+    public const string STYLESHEET_PATH = self::EMBED_JS_PATH . '/' . self::ENTRY_NAME . '.css';
 
     private readonly string $embedDir;
     /** @var ?array<string, mixed> */
@@ -36,18 +40,19 @@ final class EmbedStatic
     public function getJsModuleManifest(int $version): JsModuleManifest
     {
         $manifest = $this->getManifest();
-
-        if (!isset($manifest['index.html'])) {
-            throw new EmbedStaticException('Manifest does not contain index.html');
+        $entrypoint = $manifest[self::ENTRY_NAME . '.js'] ?? null;
+        if (null === $entrypoint) {
+            throw new EmbedStaticException(sprintf('Manifest does not contain %s', self::ENTRY_NAME . '.js'));
         }
+        $entrypoint = $this->normalizePath($entrypoint);
 
         $scripts = [];
         $stylesheet = null;
-        foreach ($manifest as $file => $path) {
+        foreach ($this->getManifest() as $file => $path) {
             if (str_ends_with($file, '.js')) {
-                $scripts[] = mb_substr($path, 2);
+                $scripts[] = $this->normalizePath($path);
             } elseif (str_ends_with($file, '.css')) {
-                $stylesheet = mb_substr($path, 2);
+                $stylesheet = $this->normalizePath($path);
             }
         }
 
@@ -55,9 +60,9 @@ final class EmbedStatic
             Account::MODULE_CODE,
             (string) $version,
             self::TARGETS,
-            'index.html',
+            $entrypoint,
             $scripts,
-            $stylesheet
+            $stylesheet,
         );
     }
 
@@ -80,5 +85,15 @@ final class EmbedStatic
         }
 
         return $this->manifest;
+    }
+
+    private function normalizePath(string $path): string
+    {
+        $result = preg_replace('#^\./#', '', $path);
+        if (null === $result) {
+            throw new EmbedStaticException(sprintf('Invalid path: %s', $path));
+        }
+
+        return $result;
     }
 }

@@ -6,12 +6,13 @@
     "lint:fix": "eslint --fix --ext .js,.json,.ts,.vue src"
   },
   "dependencies": {
-    "@omnicajs/vue-remote": "^0.2.9",
+    "@omnicajs/vue-remote": "^0.2.23",
     "@remote-ui/rpc": "^1.4.7",
-    "@retailcrm/embed-ui": "^0.9.5",
-    "@retailcrm/embed-ui-v1-components": "^0.9.5",
-    "@retailcrm/embed-ui-v1-contexts": "^0.9.5",
-    "@retailcrm/embed-ui-v1-types": "^0.9.5",
+    "@retailcrm/embed-ui": "^0.9.19",
+    "@retailcrm/embed-ui-v1-components": "^0.9.19",
+    "@retailcrm/embed-ui-v1-contexts": "^0.9.19",
+    "@retailcrm/embed-ui-v1-endpoint": "^0.9.19",
+    "@retailcrm/embed-ui-v1-types": "^0.9.19",
     "date-fns": "^4.1.0",
     "pinia": "^2.2.8",
     "uuid": "^11.0.3",

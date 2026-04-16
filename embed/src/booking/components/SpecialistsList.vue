@@ -5,10 +5,9 @@
         :class="$style.back"
         @click="$emit('back')"
     >
-        <IconBack class="UiIcon-icon-2pR-" />
-        {{ t('back_to_branches') }}
+        <IconBack class="UiIcon-icon-2pR-" /> {{ t('back_to_branches') }}
     </UiButton>
-    
+
     <div :class="$style.container">
         <UiLoader :class="{ [$style.hide]: !loading }" :overlay="false" />
 
@@ -29,10 +28,12 @@
                     :size="'lg'"
                     :name="specialist.name"
                 />
+
                 <div :class="$style.details">
                     <div :class="$style.name">
                         {{ specialist.name }}
                     </div>
+
                     <div :class="$style.position">
                         {{ specialist.position }}
                     </div>
@@ -43,6 +44,7 @@
                 <div :class="$style.date">
                     {{ formatDate(specialist.nearestSlots.date) }}
                 </div>
+
                 <div :class="$style.times">
                     <UiButton
                         v-for="time in specialist.nearestSlots.slots"
@@ -58,14 +60,27 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { UiButton, UiAvatar, UiLoader, UiError } from '@retailcrm/embed-ui-v1-components/remote'
-import IconBack from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/arrow-backward.svg'
-import { format } from 'date-fns'
-import { enGB, es, ru } from 'date-fns/locale'
+<script lang="ts" remote setup>
 import type { Specialist } from '../types'
-import { ref, onMounted, computed } from 'vue'
+
+import {
+    UiButton,
+    UiAvatar,
+    UiLoader,
+    UiError,
+} from '@retailcrm/embed-ui-v1-components/remote'
+
+import IconBack from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/arrow-backward.svg'
+
+import { computed } from 'vue'
+import { format } from 'date-fns'
+import { onMounted } from 'vue'
+import { ref } from 'vue'
 import { useHost } from '@retailcrm/embed-ui'
+
+import { enGB } from 'date-fns/locale'
+import { es } from 'date-fns/locale'
+import { ru } from 'date-fns/locale'
 
 const props = defineProps<{
     currentSpecialist: string | null

@@ -1095,10 +1095,10 @@
   resolved "https://registry.yarnpkg.com/@omnicajs/symfony-router/-/symfony-router-1.0.0.tgz#37d040edb097ebe8c7c17257b1cfe8c36d26c587"
   integrity sha512-AuxnsWnlHltE81Vwi6GSCck/X8CLu20oa35JgCimCBhOdZ5pG/ZUJmq4f8M7J82o7fopW0SbGHTK7iHmU4L0wA==
 
-"@omnicajs/vue-remote@^0.2.8", "@omnicajs/vue-remote@^0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@omnicajs/vue-remote/-/vue-remote-0.2.9.tgz#0d07f757f657b9b1f82528d22b2026e1241cc9be"
-  integrity sha512-M7rBfcMxjUokyr7LBWvsvQ87KYg3COjBeikPZRwVmdOKqq2cajI3sid29geP5fdeRHvnrLg7Wi4F1jHXcwoyeQ==
+"@omnicajs/vue-remote@^0.2.23":
+  version "0.2.23"
+  resolved "https://registry.yarnpkg.com/@omnicajs/vue-remote/-/vue-remote-0.2.23.tgz#3064b0197a8e04a2215af0e90a5aa2b0432095e7"
+  integrity sha512-l+LICXpA+jLInZ8MeiEy+0VFcEP9aH1+02H/BQeBCbOZc9KkNjdQWq6SFv+u9SoU7FxwuljIHdEuiVc1uUPmCg==
   dependencies:
     "@remote-ui/rpc" "^1.4.5"
 
@@ -1117,45 +1117,54 @@
   resolved "https://registry.yarnpkg.com/@remote-ui/rpc/-/rpc-1.4.7.tgz#0b353b2fcc95db17a23b4f90d1a587d7e906c77f"
   integrity sha512-ORiaKsbVBSEi3Z4YWOj5Ucrp70NrkNktI1hdqqfBW7Z3o0YoxTX9MIqtLmsc6721IbjmExvLrLip5I5Y7uAbng==
 
-"@retailcrm/embed-ui-v1-components@^0.9.5":
-  version "0.9.5"
-  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-components/-/embed-ui-v1-components-0.9.5.tgz#c4d7ba418bf95d4b0b4592ca3294e61140618d4f"
-  integrity sha512-weiymfNdHD6u68jvHm3hyENl6FMio0GiQKlncv2OZp5myqilBUkOO8/ULGPtRgY7b3ZKTYlCR9i+DQJuTEgu7g==
+"@retailcrm/embed-ui-v1-components@^0.9.19":
+  version "0.9.19"
+  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-components/-/embed-ui-v1-components-0.9.19.tgz#9a629de2b63426300c0ddf1e4e1211c56dc5e4d7"
+  integrity sha512-wob0px4ddwd7BJcoU81N9CexcxFTS33Rj16C6jLjVLZ6cyjoVo5vx/Q/P3LT9CS5lPdMQLvYdC5K3vOe/d0RZA==
   dependencies:
-    "@omnicajs/vue-remote" "^0.2.8"
-    "@remote-ui/rpc" "^1.4.5"
+    "@omnicajs/vue-remote" "^0.2.23"
+    "@remote-ui/rpc" "^1.4.7"
     "@retailcrm/image-preview" "^1.0.2"
     date-fns "^4.1.0"
     lodash.isequal "^4.5.0"
     vue3-perfect-scrollbar "^1.6.0"
 
-"@retailcrm/embed-ui-v1-contexts@^0.9.5":
-  version "0.9.5"
-  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-contexts/-/embed-ui-v1-contexts-0.9.5.tgz#52f65f120ee9715fde50ea1f431c99f5f22c104b"
-  integrity sha512-y9vaOH5n229iLKERXP392iycacSzb8ULmT+JIDRP76GsrmeQgeC/rqZvbAKkb/eVKWHLeQWq81C0VkfS9j0m1g==
+"@retailcrm/embed-ui-v1-contexts@^0.9.19":
+  version "0.9.19"
+  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-contexts/-/embed-ui-v1-contexts-0.9.19.tgz#f7ddec12fdfdffe17130e874d3b45084d5abbb05"
+  integrity sha512-tou1/0dHGPDDiuLrwvLypEOyLkiONcmXAN62MQDUUCmH+U7MDUINrejGMc/oIwXJo6xoHNXwdd4SsSlw5tysZA==
+  dependencies:
+    "@omnicajs/symfony-router" "^1.0.0"
+    "@retailcrm/embed-ui-v1-types" "^0.9.19"
+
+"@retailcrm/embed-ui-v1-endpoint@^0.9.19":
+  version "0.9.19"
+  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-endpoint/-/embed-ui-v1-endpoint-0.9.19.tgz#bd6e16197f4ba4e6fa5b8317d9791be94ca87125"
+  integrity sha512-mRBLxPTqtHhZe7Qtiut1RIEgZiPi3UypUdSWW1emu4vdAnojKqPLKMAknvabinst0xmiMkDhJBmVvQp1iIq1Jg==
+  dependencies:
+    "@remote-ui/rpc" "^1.4.7"
+    "@retailcrm/embed-ui-v1-components" "^0.9.19"
+    "@retailcrm/embed-ui-v1-contexts" "^0.9.19"
+    "@retailcrm/embed-ui-v1-types" "^0.9.19"
+
+"@retailcrm/embed-ui-v1-types@^0.9.19":
+  version "0.9.19"
+  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-types/-/embed-ui-v1-types-0.9.19.tgz#8d775895b2aa3099dff3ba7967f9b8c8f834e966"
+  integrity sha512-nozgUZNaOicoFNmHCjmy4YLgbT0FNBMUpq9DzTPf7z8ANAZsoHmgsEeJ762z44IkjP49meulvorFgOP3GlSSBg==
+
+"@retailcrm/embed-ui@^0.9.19":
+  version "0.9.19"
+  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui/-/embed-ui-0.9.19.tgz#0be414bc0f7be38df3d9796139078a352e04ce13"
+  integrity sha512-fXkWXQE2cliHXFxQzXLOxkZenMMV1XtQcOC+9xz5qqQsyKo0x3j2snF0bBkkfvoIxBUIYBvpgbjSU5K3mD17/g==
   dependencies:
     "@floating-ui/core" "^1.6.9"
     "@floating-ui/dom" "^1.6.13"
     "@omnicajs/symfony-router" "^1.0.0"
-    "@retailcrm/embed-ui-v1-types" "^0.9.5"
-
-"@retailcrm/embed-ui-v1-types@^0.9.5":
-  version "0.9.5"
-  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui-v1-types/-/embed-ui-v1-types-0.9.5.tgz#60543b82ea1a03b99194bb061f0774fcf410d445"
-  integrity sha512-r4n9h1yCZ7woP3ZAuakBwuQ4pHjK2Dwi3d8sH9Ud2PfJYFVJILV86eT1SfOAqHWrKuLVDb4PS8RDNidKYSgnNQ==
-
-"@retailcrm/embed-ui@^0.9.5":
-  version "0.9.5"
-  resolved "https://registry.yarnpkg.com/@retailcrm/embed-ui/-/embed-ui-0.9.5.tgz#d0ffa0bf38f665544ac4278af7d349b003372d25"
-  integrity sha512-3nZhX90GPHDDCBILQY1qz6WeglnQvr9vCACQcMSzIqGDoQlPqm7AHAShwV5V9QegRUQ1TS/QYTjbHMsqSCBr3A==
-  dependencies:
-    "@floating-ui/core" "^1.6.9"
-    "@floating-ui/dom" "^1.6.13"
-    "@omnicajs/symfony-router" "^1.0.0"
-    "@omnicajs/vue-remote" "^0.2.8"
+    "@omnicajs/vue-remote" "^0.2.23"
     "@remote-ui/rpc" "^1.4.5"
-    "@retailcrm/embed-ui-v1-contexts" "^0.9.5"
-    "@retailcrm/embed-ui-v1-types" "^0.9.5"
+    "@retailcrm/embed-ui-v1-components" "^0.9.19"
+    "@retailcrm/embed-ui-v1-contexts" "^0.9.19"
+    "@retailcrm/embed-ui-v1-types" "^0.9.19"
 
 "@retailcrm/image-preview@^1.0.2":
   version "1.0.2"

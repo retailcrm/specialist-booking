@@ -45,7 +45,7 @@ class EmbedZipCommand extends Command
 
         $targetFile = $this->varDir . '/module.zip';
 
-        if (!$this->filesystem->exists($targetFile)) {
+        if ($this->filesystem->exists($targetFile)) {
             $this->filesystem->remove($targetFile);
         }
 

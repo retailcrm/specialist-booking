@@ -8,7 +8,7 @@
         <IconBack class="UiIcon-icon-2pR-" />
         {{ t('back_to_cities') }}
     </UiButton>
-    
+
     <div :class="$style.container">
         <UiLoader :class="{ [$style.hide]: !loading }" :overlay="false" />
 
@@ -29,6 +29,7 @@
                         <div :class="$style.name">
                             {{ branch.name }}
                         </div>
+
                         <div :class="$style.specialist_count">
                             {{ t('specialist', branch.specialistCount) }}
                         </div>
@@ -39,12 +40,21 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { UiButton, UiLoader, UiError } from '@retailcrm/embed-ui-v1-components/remote'
-import IconBack from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/arrow-backward.svg'
-import { ref, onMounted, watch } from 'vue'
-import { useHost } from '@retailcrm/embed-ui'
+<script lang="ts" remote setup>
 import type { Branch } from '../types'
+
+import { onMounted } from 'vue'
+import { ref } from 'vue'
+import { useHost } from '@retailcrm/embed-ui'
+import { watch } from 'vue'
+
+import {
+    UiButton,
+    UiError,
+    UiLoader,
+} from '@retailcrm/embed-ui-v1-components/remote'
+
+import IconBack from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/arrow-backward.svg'
 
 const props = defineProps<{
     city?: string

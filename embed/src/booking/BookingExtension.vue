@@ -4,7 +4,7 @@
             <IconCalendar class="UiIcon-icon-2pR-" />
             {{ t('button') }}
         </UiToolbarButton>
-    
+
         <UiModalSidebar
             v-if="isBookingSidebarInitialized"
             v-model:opened="showBookingSidebar"
@@ -13,13 +13,14 @@
             <template #title>
                 {{ t('title') }}
             </template>
-            
+
             <CitySelector
                 v-if="appSettings?.chooseCity && currentView === 'city'"
                 :selected-city="selectedCity"
                 :t="t"
                 @select-city="handleCitySelect"
             />
+
             <BranchSelector
                 v-else-if="(appSettings?.chooseStore || selectedCity) && currentView === 'branch'"
                 :city="selectedCity || undefined"
@@ -29,6 +30,7 @@
                 @select-branch="handleBranchSelect"
                 @back="currentView = 'city'"
             />
+
             <SpecialistsList
                 v-else-if="currentView === 'specialists'"
                 :current-specialist="customFieldSpecialist"
@@ -39,6 +41,7 @@
                 @select-specialist="handleSpecialistSelect"
                 @back="currentView = 'branch'"
             />
+
             <SpecialistCalendar
                 v-else
                 :specialist="selectedSpecialist"
@@ -57,18 +60,30 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { ref, watch } from 'vue'
-import IconCalendar from  '@retailcrm/embed-ui-v1-components/assets/sprites/actions/calendar-month.svg'
-import { UiToolbarButton, UiModalSidebar, UiButton } from '@retailcrm/embed-ui-v1-components/remote'
-import { useI18n } from 'vue-i18n'
-import { useSettingsContext as useSettings, useField, useCustomField, useHost } from '@retailcrm/embed-ui'
-import { useContext } from '@retailcrm/embed-ui-v1-contexts/remote/custom'
-import SpecialistsList from './components/SpecialistsList.vue'
-import SpecialistCalendar from './components/SpecialistCalendar.vue'
-import CitySelector from './components/CitySelector.vue'
-import BranchSelector from './components/BranchSelector.vue'
+<script lang="ts" remote setup>
 import type { Specialist, Settings } from './types'
+
+import {
+    UiButton,
+    UiModalSidebar,
+    UiToolbarButton,
+} from '@retailcrm/embed-ui-v1-components/remote'
+
+import BranchSelector from './components/BranchSelector.vue'
+import CitySelector from './components/CitySelector.vue'
+import IconCalendar from  '@retailcrm/embed-ui-v1-components/assets/sprites/actions/calendar-month.svg'
+import SpecialistCalendar from './components/SpecialistCalendar.vue'
+import SpecialistsList from './components/SpecialistsList.vue'
+
+import { ref } from 'vue'
+import { useContext } from '@retailcrm/embed-ui-v1-contexts/remote/custom'
+import { useCustomField } from '@retailcrm/embed-ui'
+import { useField } from '@retailcrm/embed-ui'
+import { useHost } from '@retailcrm/embed-ui'
+import { useI18n } from 'vue-i18n'
+import { useSettingsContext as useSettings } from '@retailcrm/embed-ui'
+import { watch } from 'vue'
+
 import { CustomFieldSpecialistCode, CustomFieldSpecialistDateTimeCode } from './types'
 
 // i18n setup

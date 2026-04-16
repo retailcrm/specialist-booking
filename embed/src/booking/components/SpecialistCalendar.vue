@@ -1,8 +1,7 @@
 <template>
     <div :class="$style.container">
         <UiButton appearance="tertiary" @click="$emit('back')">
-            <IconBack class="UiIcon-icon-2pR-" />
-            {{ t('back_to_specialists') }}
+            <IconBack class="UiIcon-icon-2pR-" /> {{ t('back_to_specialists') }}
         </UiButton>
 
         <div v-if="specialist" :class="$style.specialist_info">
@@ -10,10 +9,12 @@
                 :src="specialist.photo"
                 :name="specialist.name"
             />
+
             <div :class="$style.details">
                 <div :class="$style.name">
                     {{ specialist.name }}
                 </div>
+
                 <div :class="$style.position">
                     {{ specialist.position }}
                 </div>
@@ -25,7 +26,9 @@
                 <UiButton appearance="tertiary" @click="previousMonth">
                     <IconPrev :class="$style.nav_button_left" />
                 </UiButton>
+
                 <span>{{ formatMonth(currentDate) }}</span>
+
                 <UiButton appearance="tertiary" @click="nextMonth">
                     <IconNext class="UiIcon-icon-2pR-" />
                 </UiButton>
@@ -57,6 +60,7 @@
             <div :class="$style.date_header">
                 {{ selectedDate && formatDate(selectedDate) }}
             </div>
+
             <div :class="$style.slots">
                 <UiButton
                     v-for="slot in (selectedDate ? availableSlots[formatDateKey(selectedDate)] : [])"
@@ -71,26 +75,37 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" remote setup>
+import type { Specialist } from '../types'
+
 import IconBack from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/arrow-backward.svg'
-import IconPrev from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/chevron-right.svg'
 import IconNext from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/chevron-right.svg'
-import { UiButton, UiAvatar } from '@retailcrm/embed-ui-v1-components/remote'
-import { ref, computed, onMounted } from 'vue'
+import IconPrev from '@retailcrm/embed-ui-v1-components/assets/sprites/arrows/chevron-right.svg'
+
+import {
+    UiAvatar,
+    UiButton,
+} from '@retailcrm/embed-ui-v1-components/remote'
+
+import { computed } from 'vue'
+import { onMounted } from 'vue'
+import { ref } from 'vue'
 import { useHost } from '@retailcrm/embed-ui'
 import {
-    startOfMonth,
-    endOfMonth,
-    startOfWeek,
-    endOfWeek,
-    eachDayOfInterval,
-    addMonths,
-    subMonths,
-    format,
     addDays,
+    addMonths,
+    eachDayOfInterval,
+    endOfMonth,
+    endOfWeek,
+    format,
+    startOfMonth,
+    startOfWeek,
+    subMonths,
 } from 'date-fns'
-import { enGB, es, ru } from 'date-fns/locale'
-import type { Specialist } from '../types'
+
+import { enGB } from 'date-fns/locale'
+import { es } from 'date-fns/locale'
+import { ru } from 'date-fns/locale'
 
 const props = defineProps<{
     specialist: Specialist | null
@@ -132,20 +147,20 @@ const loadSlots = async () => {
 const weekDays = computed(() => {
     const days = []
     const date = startOfWeek(new Date(), { weekStartsOn: 1 })
-    
+
     for (let i = 0; i < 7; i++) {
         days.push(format(addDays(date, i), 'EEEEEE', {
             locale: locales[props.locale as keyof typeof locales],
         }))
     }
-    
+
     return days
 })
 
 const calendarDays = computed(() => {
     const start = startOfWeek(startOfMonth(currentDate.value), { weekStartsOn: 1 })
     const end = endOfWeek(endOfMonth(currentDate.value), { weekStartsOn: 1 })
-  
+
     return eachDayOfInterval({ start, end }).map(date => ({
         date,
         isCurrentMonth: date.getMonth() === currentDate.value.getMonth(),
@@ -157,7 +172,7 @@ const formatMonth = (date: Date) => {
     const monthAndYear = format(date, 'LLLL yyyy', {
         locale: locales[props.locale as keyof typeof locales],
     })
-    
+
     return monthAndYear.charAt(0).toUpperCase() + monthAndYear.slice(1)
 }
 
