@@ -11,6 +11,7 @@ final readonly class JsModuleManifest implements \JsonSerializable
     public function __construct(
         private string $code,
         private string $version,
+        private string $runner,
         private array $targets,
         private string $entrypoint,
         private array $scripts,
@@ -26,6 +27,7 @@ final readonly class JsModuleManifest implements \JsonSerializable
         $result = [
             'code' => $this->code,
             'version' => $this->version,
+            'runner' => $this->runner,
             'targets' => $this->targets,
             'entrypoint' => $this->entrypoint,
             'scripts' => $this->scripts,

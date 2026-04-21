@@ -59,6 +59,7 @@ final class EmbedStatic
         return new JsModuleManifest(
             Account::MODULE_CODE,
             (string) $version,
+            self::RUNNER,
             self::TARGETS,
             $entrypoint,
             $scripts,
