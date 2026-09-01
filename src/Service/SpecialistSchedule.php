@@ -36,6 +36,15 @@ final readonly class SpecialistSchedule
     }
 
     /**
+     * Текущий момент по часовому поясу системы CRM — точка отсчёта для
+     * расчёта слотов.
+     */
+    public function now(): \DateTimeImmutable
+    {
+        return $this->busySlotFetcher->getNow();
+    }
+
+    /**
      * Return available time slots for specialist in given date range
      *
      * @return DaySlots[]
@@ -79,9 +88,15 @@ final readonly class SpecialistSchedule
         \DateTimeImmutable $now,
         bool $stopOnFirstDay = false,
     ): array {
-        $workingTime = $this->busySlotFetcher->getCompanyWorkingTime();
+        // личное недельное расписание заменяет общее; личные нерабочие дни
+        // (отпуска) действуют вдобавок к общим праздникам
+        $workingTime = $specialist->getWorkTimes()
+            ?? $this->busySlotFetcher->getCompanyWorkingTime();
         $busySlots = $this->busySlotFetcher->fetch($specialist, $startDate, $endDate);
-        $nonWorkingDays = $this->busySlotFetcher->getNonWorkingDays();
+        $nonWorkingDays = array_merge(
+            $this->busySlotFetcher->getNonWorkingDays(),
+            $specialist->getNonWorkingDays() ?? [],
+        );
         $result = [];
 
         // Create a map of busy slots by date for faster lookup

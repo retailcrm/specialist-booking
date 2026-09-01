@@ -108,6 +108,34 @@ final readonly class SpecialistBusySlotFetcher implements SpecialistBusySlotFetc
         return $this->getSettings()->getSlotDuration();
     }
 
+    public function getNow(): \DateTimeImmutable
+    {
+        $settings = $this->getSettings();
+        $timezone = $settings->getTimezone();
+
+        if (null === $timezone) {
+            $this->updateSettings();
+            $timezone = $settings->getTimezone();
+        }
+
+        if (null === $timezone) {
+            return new \DateTimeImmutable('now');
+        }
+
+        try {
+            $tz = new \DateTimeZone($timezone);
+        } catch (\Exception) {
+            return new \DateTimeImmutable('now');
+        }
+
+        // стенные часы пояса CRM, приведённые к наивному времени
+        $wallClock = (new \DateTimeImmutable('now', $tz))->format('Y-m-d H:i:s');
+        $now = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $wallClock);
+        assert(false !== $now);
+
+        return $now;
+    }
+
     public function getStores(): array
     {
         return array_filter(

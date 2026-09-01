@@ -63,6 +63,11 @@ class SpecialistBusySlotFetcher implements SpecialistBusySlotFetcherInterface
         return 60;
     }
 
+    public function getNow(): \DateTimeImmutable
+    {
+        return new \DateTimeImmutable('now');
+    }
+
     public function getStores(): array
     {
         $s1a = new StoreAddress();

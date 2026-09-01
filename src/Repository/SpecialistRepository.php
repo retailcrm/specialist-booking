@@ -20,8 +20,11 @@ class SpecialistRepository extends ServiceEntityRepository
     /**
      * @return Specialist[]
      */
-    public function findByAccountOrderedByOrdering(Account $account, ?string $storeCode = null): array
-    {
+    public function findByAccountOrderedByOrdering(
+        Account $account,
+        ?string $storeCode = null,
+        ?string $specialtyName = null,
+    ): array {
         $qb = $this->createQueryBuilder('s')
             ->andWhere('s.account = :account')
             ->setParameter('account', $account)
@@ -33,6 +36,14 @@ class SpecialistRepository extends ServiceEntityRepository
             $qb
                 ->andWhere('s.storeCode = :storeCode')
                 ->setParameter('storeCode', $storeCode)
+            ;
+        }
+
+        if (null !== $specialtyName) {
+            $qb
+                ->innerJoin('s.specialty', 'sp')
+                ->andWhere('LOWER(sp.name) = LOWER(:specialtyName)')
+                ->setParameter('specialtyName', $specialtyName)
             ;
         }
 

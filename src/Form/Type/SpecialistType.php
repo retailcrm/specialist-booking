@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -52,6 +53,18 @@ class SpecialistType extends AbstractType
                 'label' => 'ordering',
                 'required' => true,
                 'attr' => ['min' => 0, 'max' => 999],
+            ])
+            ->add('workTimesText', TextareaType::class, [
+                'label' => 'personal_work_times',
+                'help' => 'personal_work_times_help',
+                'required' => false,
+                'attr' => ['rows' => 3, 'placeholder' => "1: 10:00-13:00, 14:00-18:00\n6: 10:00-15:00"],
+            ])
+            ->add('nonWorkingDaysText', TextType::class, [
+                'label' => 'personal_non_working_days',
+                'help' => 'personal_non_working_days_help',
+                'required' => false,
+                'attr' => ['placeholder' => '09.04-09.18, 12.31'],
             ])
             ->add('photoFile', FileType::class, [
                 'label' => 'photo',

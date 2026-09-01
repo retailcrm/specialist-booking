@@ -39,6 +39,24 @@ class Specialist
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $storeCode = null;
 
+    /**
+     * Личное недельное расписание в формате рабочего времени системы;
+     * null — специалист работает по общему расписанию аккаунта.
+     *
+     * @var array<int, array<array{string, string}>>|null
+     */
+    #[ORM\Column(type: 'json', nullable: true, options: ['jsonb' => true])]
+    private ?array $workTimes = null;
+
+    /**
+     * Личные нерабочие дни (отпуска и т.п.), формат как у системы:
+     * пары {'mm.dd', 'mm.dd'}. Применяются вдобавок к общим нерабочим дням.
+     *
+     * @var array<array{string, string}>|null
+     */
+    #[ORM\Column(type: 'json', nullable: true, options: ['jsonb' => true])]
+    private ?array $nonWorkingDays = null;
+
     public function __construct(string $name)
     {
         $this->name = $name;
@@ -155,6 +173,42 @@ class Specialist
     public function setStoreCode(?string $storeCode): static
     {
         $this->storeCode = $storeCode;
+
+        return $this;
+    }
+
+    /**
+     * @return array<int, array<array{string, string}>>|null
+     */
+    public function getWorkTimes(): ?array
+    {
+        return $this->workTimes;
+    }
+
+    /**
+     * @param array<int, array<array{string, string}>>|null $workTimes
+     */
+    public function setWorkTimes(?array $workTimes): static
+    {
+        $this->workTimes = $workTimes;
+
+        return $this;
+    }
+
+    /**
+     * @return array<array{string, string}>|null
+     */
+    public function getNonWorkingDays(): ?array
+    {
+        return $this->nonWorkingDays;
+    }
+
+    /**
+     * @param array<array{string, string}>|null $nonWorkingDays
+     */
+    public function setNonWorkingDays(?array $nonWorkingDays): static
+    {
+        $this->nonWorkingDays = $nonWorkingDays;
 
         return $this;
     }

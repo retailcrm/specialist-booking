@@ -111,4 +111,49 @@ class SpecialistScheduleTest extends TestCase
             )
         );
     }
+
+    public function testPersonalScheduleOverridesCompany(): void
+    {
+        // Личное расписание заменяет общее, личный нерабочий день (отпуск)
+        // действует вдобавок к общим праздникам.
+        $now = new \DateTimeImmutable('2025-01-16 08:00:00');
+        $schedule = new SpecialistSchedule(new SpecialistBusySlotFetcher());
+
+        $specialist = new Specialist('Part Timer');
+        $specialist->setId(2);
+        // работает только чт (4) 10:00-12:00 и пт (5) 10:00-12:00
+        $specialist->setWorkTimes([
+            4 => [['10:00', '12:00']],
+            5 => [['10:00', '12:00']],
+        ]);
+        // личный отпуск в пятницу 2025-01-17 (общий нерабочий день у мока —
+        // тоже 17-е; проверяем слияние отдельной датой)
+        $specialist->setNonWorkingDays([['01.20', '01.24']]);
+
+        $slots = $schedule->getSpecialistSlots(
+            $specialist,
+            new \DateTimeImmutable('2025-01-16'),
+            new \DateTimeImmutable('2025-01-30'),
+            $now,
+        );
+
+        $flat = [];
+        foreach ($slots as $daySlots) {
+            $flat[$daySlots->getDate()] = array_map(
+                fn (\DateTimeImmutable $slot) => $slot->format('H:i'),
+                $daySlots->getSlots()
+            );
+        }
+
+        // чт 16-е — по личной сетке; пт 17-е — общий нерабочий день;
+        // неделя 20-24 — личный отпуск (чт 23-е и пт 24-е выпадают);
+        // далее обычные чт и пт по личной сетке
+        $this->assertSame(
+            [
+                '2025-01-16' => ['10:00', '11:00'],
+                '2025-01-30' => ['10:00', '11:00'],
+            ],
+            $flat
+        );
+    }
 }

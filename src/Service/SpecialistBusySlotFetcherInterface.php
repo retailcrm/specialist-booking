@@ -32,6 +32,13 @@ interface SpecialistBusySlotFetcherInterface
     public function getSlotDuration(): int;
 
     /**
+     * Текущий момент по часовому поясу системы CRM как «наивное» время
+     * (в поясе по умолчанию), согласованное со всеми временами расписаний
+     * и заказов — они хранятся строками в поясе CRM.
+     */
+    public function getNow(): \DateTimeImmutable;
+
+    /**
      * @return Store[]
      */
     public function getStores(): array;

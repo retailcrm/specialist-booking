@@ -103,6 +103,8 @@ class SpecialistController extends AbstractController
                 $specialist->setSpecialty($specialistModel->specialty);
                 $specialist->setOrdering($specialistModel->ordering);
                 $specialist->setStoreCode($specialistModel->storeCode);
+                $specialist->setWorkTimes(SpecialistModel::parseWorkTimes($specialistModel->workTimesText));
+                $specialist->setNonWorkingDays(SpecialistModel::parseNonWorkingDays($specialistModel->nonWorkingDaysText));
 
                 if ($specialistModel->photoFile) {
                     $originalFilename = pathinfo($specialistModel->photoFile->getClientOriginalName(), PATHINFO_FILENAME);

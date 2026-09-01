@@ -19,6 +19,8 @@
                     {{ form_row(specialistForm.storeCode) }}
                 {% endif %}
                 {{ form_row(specialistForm.ordering) }}
+                {{ form_row(specialistForm.workTimesText) }}
+                {{ form_row(specialistForm.nonWorkingDaysText) }}
 
                 {% if specialistForm.vars.data.photo %}
                     <div class="photo-preview">

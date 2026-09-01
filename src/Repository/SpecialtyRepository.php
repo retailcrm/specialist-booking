@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Account;
+use App\Entity\Specialist;
 use App\Entity\Specialty;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,6 +26,23 @@ class SpecialtyRepository extends ServiceEntityRepository
             ->andWhere('s.account = :account')
             ->setParameter('account', $account)
             ->orderBy('s.name', 'ASC')
+        ;
+    }
+
+    /**
+     * @return array<array{name: string, cnt: int}>
+     */
+    public function getNamesWithSpecialistCount(Account $account): array
+    {
+        return $this->createQueryBuilder('sp')
+            ->select('sp.name AS name, COUNT(s.id) AS cnt')
+            ->leftJoin(Specialist::class, 's', Join::WITH, 's.specialty = sp')
+            ->andWhere('sp.account = :account')
+            ->setParameter('account', $account)
+            ->groupBy('sp.id')
+            ->orderBy('sp.name', 'ASC')
+            ->getQuery()
+            ->getResult()
         ;
     }
 }

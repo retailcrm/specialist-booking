@@ -35,6 +35,9 @@ class AccountSettings
     #[ORM\Column(type: 'json', nullable: true, options: ['jsonb' => true])]
     private ?array $nonWorkingDays = null;
 
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $timezone = null;
+
     #[ORM\Column(options: ['default' => 60])]
     private int $slotDuration = 60;
 
@@ -56,6 +59,22 @@ class AccountSettings
         if (null !== $settings->nonWorkingDays) {
             $this->setNonWorkingDaysFromCrm($settings->nonWorkingDays);
         }
+        /* @phpstan-ignore-next-line */
+        if (null !== $settings->timezone?->value) {
+            $this->setTimezone($settings->timezone->value);
+        }
+
+        return $this;
+    }
+
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(?string $timezone): static
+    {
+        $this->timezone = $timezone;
 
         return $this;
     }

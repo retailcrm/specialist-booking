@@ -74,7 +74,7 @@ class EmbedApiController extends AbstractController
 
         return $this->json(new SpecialistSlots(
             $specialist,
-            $specialistSchedule->getSpecialistSlots($specialist, $startDate, $endDate, new \DateTimeImmutable('now'))
+            $specialistSchedule->getSpecialistSlots($specialist, $startDate, $endDate, $specialistSchedule->now())
         ));
     }
 
@@ -103,7 +103,7 @@ class EmbedApiController extends AbstractController
         $account = $this->accountManager->getAccount();
 
         $specialists = $this->specialistRepository->findByAccountOrderedByOrdering($account, $branchCode);
-        $specialistSlots = $specialistSchedule->getNearestDaySchedule($specialists, new \DateTimeImmutable('now'));
+        $specialistSlots = $specialistSchedule->getNearestDaySchedule($specialists, $specialistSchedule->now());
 
         $availableSpecialists = [];
         foreach ($specialists as $specialist) {

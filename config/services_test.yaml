@@ -1,3 +1,6 @@
 services:
     App\Tests\Mock\Service\SpecialistBusySlotFetcher: ~
     App\Service\SpecialistBusySlotFetcherInterface: '@App\Tests\Mock\Service\SpecialistBusySlotFetcher'
+    App\Tests\Mock\Service\OrderBookingWriter:
+        public: true
+    App\Service\OrderBookingWriterInterface: '@App\Tests\Mock\Service\OrderBookingWriter'
