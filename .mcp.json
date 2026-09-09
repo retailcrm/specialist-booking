@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "retailcrm-embed-ui-v1-contexts": {
+      "command": "${CLAUDE_PROJECT_DIR:-.}/embed/node_modules/.bin/embed-ui-v1-contexts-mcp"
+    },
+    "retailcrm-embed-ui-v1-endpoint": {
+      "command": "${CLAUDE_PROJECT_DIR:-.}/embed/node_modules/.bin/embed-ui-v1-endpoint-mcp"
+    }
+  }
+}

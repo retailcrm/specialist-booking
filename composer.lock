@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fe947362caeb403f5b5641d98de7685b",
+    "content-hash": "0532e24773089f1e74fbf8ab54deab37",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -3591,16 +3591,16 @@
         },
         {
             "name": "retailcrm/api-client-php",
-            "version": "v6.15.25",
+            "version": "v6.15.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/retailcrm/api-client-php.git",
-                "reference": "315cdd8b647d56f4223cdf8bb2c56099624311a8"
+                "reference": "6db5a5ff42f9890120bd12d047c26e25b6b4aac9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/retailcrm/api-client-php/zipball/315cdd8b647d56f4223cdf8bb2c56099624311a8",
-                "reference": "315cdd8b647d56f4223cdf8bb2c56099624311a8",
+                "url": "https://api.github.com/repos/retailcrm/api-client-php/zipball/6db5a5ff42f9890120bd12d047c26e25b6b4aac9",
+                "reference": "6db5a5ff42f9890120bd12d047c26e25b6b4aac9",
                 "shasum": ""
             },
             "require": {
@@ -3690,9 +3690,9 @@
             "support": {
                 "email": "support@retailcrm.pro",
                 "issues": "https://github.com/retailcrm/api-client-php/issues",
-                "source": "https://github.com/retailcrm/api-client-php/tree/v6.15.25"
+                "source": "https://github.com/retailcrm/api-client-php/tree/v6.15.27"
             },
-            "time": "2026-04-20T07:39:41+00:00"
+            "time": "2026-04-23T13:55:48+00:00"
         },
         {
             "name": "symfony/asset",
@@ -12351,7 +12351,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -12359,6 +12359,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

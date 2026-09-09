@@ -1,11 +1,16 @@
 import { createI18n } from 'vue-i18n'
 import {
+    definePageRunner,
     defineRunner,
     defineWidgetRunner,
     runEndpoint,
 } from '@retailcrm/embed-ui-v1-endpoint/remote'
 
 import BookingExtension from './BookingExtension.vue'
+import CalendarPage from './pages/CalendarPage.vue'
+import SettingsPage from './pages/SettingsPage.vue'
+import SpecialistsPage from './pages/SpecialistsPage.vue'
+import SpecialtiesPage from './pages/SpecialtiesPage.vue'
 
 const createI18nInstance = () => createI18n({
     legacy: false,
@@ -39,5 +44,18 @@ runEndpoint(defineRunner({
             app.use(createI18nInstance())
         }),
     }],
-    pages: [{}],
+    pages: [{
+        'specialist-booking-calendar': definePageRunner(CalendarPage, app => {
+            app.use(createI18nInstance())
+        }),
+        'specialist-booking-settings': definePageRunner(SettingsPage, app => {
+            app.use(createI18nInstance())
+        }),
+        'specialist-booking-specialties': definePageRunner(SpecialtiesPage, app => {
+            app.use(createI18nInstance())
+        }),
+        'specialist-booking-specialists': definePageRunner(SpecialistsPage, app => {
+            app.use(createI18nInstance())
+        }),
+    }],
 }))

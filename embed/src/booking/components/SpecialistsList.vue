@@ -5,7 +5,7 @@
         :class="$style.back"
         @click="$emit('back')"
     >
-        <IconBack class="UiIcon-icon-2pR-" /> {{ t('back_to_branches') }}
+        <IconBack /> {{ t('back_to_branches') }}
     </UiButton>
 
     <div :class="$style.container">

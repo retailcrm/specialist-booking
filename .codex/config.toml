@@ -1,0 +1,5 @@
+[mcp_servers.retailcrm-embed-ui-v1-contexts]
+command = "./embed/node_modules/.bin/embed-ui-v1-contexts-mcp"
+
+[mcp_servers.retailcrm-embed-ui-v1-endpoint]
+command = "./embed/node_modules/.bin/embed-ui-v1-endpoint-mcp"

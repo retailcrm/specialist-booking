@@ -9,9 +9,9 @@ interface OrderBookingWriterInterface
     /**
      * Записывает бронь в заказ CRM: обновляет существующий заказ или создаёт новый.
      *
-     * @param array{first_name?: string, phone?: string, comment?: string} $customer
-     * @param ?int                                                         $customerId id клиента CRM — новый заказ привязывается к нему,
-     *                                                                                 чтобы заказ был виден в заказах клиента чата
+     * @param array{first_name?: string, last_name?: string, phone?: string, comment?: string} $customer
+     * @param ?int                                                                             $customerId id клиента CRM — новый заказ привязывается к нему,
+     *                                                                                                     чтобы заказ был виден в заказах клиента чата
      *
      * @return array{id: int, number: ?string} внутренний id и публичный номер заказа
      */

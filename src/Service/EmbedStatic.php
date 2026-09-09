@@ -5,6 +5,8 @@ namespace App\Service;
 use App\Entity\Account;
 use App\Exception\EmbedStaticException;
 use App\Service\DTO\JsModuleManifest;
+use RetailCrm\Api\Model\Entity\Integration\EmbedJs\EmbedJsPage;
+use RetailCrm\Api\Model\Entity\Integration\EmbedJs\EmbedJsTranslation;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class EmbedStatic
@@ -15,6 +17,11 @@ final class EmbedStatic
     public const string RUNNER = 'worker';
     public const string SCRIPT_PATH = self::EMBED_JS_PATH . '/' . self::ENTRY_NAME . '.js';
     public const string STYLESHEET_PATH = self::EMBED_JS_PATH . '/' . self::ENTRY_NAME . '.css';
+    public const string PAGE_CODE_ROOT = 'specialist-booking';
+    public const string PAGE_CODE_CALENDAR = 'specialist-booking-calendar';
+    public const string PAGE_CODE_SETTINGS = 'specialist-booking-settings';
+    public const string PAGE_CODE_SPECIALTIES = 'specialist-booking-specialties';
+    public const string PAGE_CODE_SPECIALISTS = 'specialist-booking-specialists';
 
     private readonly string $embedDir;
     /** @var ?array<string, mixed> */
@@ -64,6 +71,64 @@ final class EmbedStatic
             $entrypoint,
             $scripts,
             $stylesheet,
+            self::getPagesManifest(),
+        );
+    }
+
+    /**
+     * @return EmbedJsPage[]
+     */
+    public static function getPages(): array
+    {
+        return [
+            self::createPage(
+                self::PAGE_CODE_ROOT,
+                200,
+                self::translation('Booking to specialist', 'Reserva a especialistas', 'Запись к специалисту'),
+                'private_main_menu',
+            ),
+            self::createPage(
+                self::PAGE_CODE_SETTINGS,
+                300,
+                self::translation('Settings', 'Configuración', 'Настройки'),
+                'private_main_menu',
+                'page:' . self::PAGE_CODE_ROOT,
+                true,
+            ),
+            self::createPage(
+                self::PAGE_CODE_SPECIALTIES,
+                200,
+                self::translation('Specialties', 'Especialidades', 'Специализации'),
+                'private_main_menu',
+                'page:' . self::PAGE_CODE_ROOT,
+            ),
+            self::createPage(
+                self::PAGE_CODE_SPECIALISTS,
+                100,
+                self::translation('Specialists', 'Especialistas', 'Специалисты'),
+                'private_main_menu',
+                'page:' . self::PAGE_CODE_ROOT,
+            ),
+            // рабочий экран менеджера — в продажах рядом с заказами, а не в настройках;
+            // в списке последний, чтобы индексы страниц настроек не сдвигались
+            self::createPage(
+                self::PAGE_CODE_CALENDAR,
+                30,
+                self::translation('Booking calendar', 'Calendario de citas', 'Календарь записей'),
+                'activity_main_menu',
+                'orders',
+            ),
+        ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public static function getPagesManifest(): array
+    {
+        return array_map(
+            static fn (EmbedJsPage $page): array => self::serializePage($page),
+            self::getPages(),
         );
     }
 
@@ -96,5 +161,70 @@ final class EmbedStatic
         }
 
         return $result;
+    }
+
+    private static function createPage(
+        string $code,
+        int $ordering,
+        EmbedJsTranslation $title,
+        ?string $menu = null,
+        ?string $parentMenuItemCode = null,
+        bool $isSettingsMainPage = false,
+    ): EmbedJsPage {
+        $page = new EmbedJsPage();
+        $page->code = $code;
+        $page->menu = $menu;
+        $page->parentMenuItemCode = $parentMenuItemCode;
+        $page->menuItemOrdering = $ordering;
+        $page->menuItemTitle = $title;
+        $page->isSettingsMainPage = $isSettingsMainPage;
+
+        return $page;
+    }
+
+    private static function translation(string $en, string $es, string $ru): EmbedJsTranslation
+    {
+        $translation = new EmbedJsTranslation();
+        $translation->en = $en;
+        $translation->es = $es;
+        $translation->ru = $ru;
+
+        return $translation;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function serializePage(EmbedJsPage $page): array
+    {
+        $result = ['code' => $page->code];
+
+        foreach (['menu', 'parentMenuItemCode', 'menuItemOrdering'] as $property) {
+            if (null !== $page->{$property}) {
+                $result[$property] = $page->{$property};
+            }
+        }
+
+        if ($page->menuItemTitle instanceof EmbedJsTranslation) {
+            $result['menuItemTitle'] = self::serializeTranslation($page->menuItemTitle);
+        }
+
+        if (true === $page->isSettingsMainPage) {
+            $result['isSettingsMainPage'] = true;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array{en?: string, es?: string, ru?: string}
+     */
+    private static function serializeTranslation(EmbedJsTranslation $translation): array
+    {
+        return array_filter([
+            'en' => $translation->en,
+            'es' => $translation->es,
+            'ru' => $translation->ru,
+        ], static fn (?string $value): bool => null !== $value);
     }
 }

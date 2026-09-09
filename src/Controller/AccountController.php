@@ -7,8 +7,8 @@ use App\Form\Model\AccountModel;
 use App\Form\Type\AccountType;
 use App\Repository\AccountRepository;
 use App\Service\AccountManager;
+use App\Service\CrmModuleRegistration;
 use App\Service\CustomFieldManager;
-use App\Service\EmbedStatic;
 use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Attribute\WithMonologChannel;
 use Psr\Log\LoggerInterface;
@@ -20,11 +20,7 @@ use RetailCrm\Api\Model\Callback\Entity\SimpleConnection\RequestProperty\Request
 use RetailCrm\Api\Model\Callback\Response\ErrorResponse;
 use RetailCrm\Api\Model\Callback\Response\SimpleConnection\ConnectionConfigResponse;
 use RetailCrm\Api\Model\Callback\Response\SimpleConnection\ConnectionRegisterResponse;
-use RetailCrm\Api\Model\Entity\Integration\EmbedJs\EmbedJsConfiguration;
-use RetailCrm\Api\Model\Entity\Integration\IntegrationModule;
-use RetailCrm\Api\Model\Entity\Integration\Integrations;
 use RetailCrm\Api\Model\Entity\Settings\Settings;
-use RetailCrm\Api\Model\Request\Integration\IntegrationModulesEditRequest;
 use RetailCrm\Api\Model\Response\SuccessResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -46,6 +42,7 @@ class AccountController extends AbstractController
         private readonly TranslatorInterface&LocaleAwareInterface $translator,
         private readonly CustomFieldManager $customFieldManager,
         private readonly LoggerInterface $logger,
+        private readonly CrmModuleRegistration $registration,
     ) {
     }
 
@@ -188,12 +185,7 @@ class AccountController extends AbstractController
 
         // register module
         try {
-            $client->integration->edit(
-                $account->getClientId(),
-                new IntegrationModulesEditRequest(
-                    $this->getIntegrationModuleData($account)
-                )
-            );
+            $this->registration->register($this->registration->build($account));
         } catch (ApiExceptionInterface|ClientExceptionInterface $e) {
             return $e;
         }
@@ -206,44 +198,6 @@ class AccountController extends AbstractController
         }
 
         return $account;
-    }
-
-    private function getIntegrationModuleData(Account $account): IntegrationModule
-    {
-        $integrationModuleData = new IntegrationModule();
-        $integrationModuleData->code = $account->getClientId();
-        $integrationModuleData->integrationCode = Account::MODULE_CODE;
-        $integrationModuleData->active = true;
-        $integrationModuleData->name = $this->translator->trans('booking_name');
-        $integrationModuleData->clientId = $account->getClientId();
-        $integrationModuleData->baseUrl = $this->generateUrl(
-            'index',
-            referenceType: UrlGeneratorInterface::ABSOLUTE_URL
-        );
-        $integrationModuleData->logo = $integrationModuleData->baseUrl . 'logo.svg';
-        $integrationModuleData->accountUrl = $this->generateUrl(
-            'account_settings_index',
-            referenceType: UrlGeneratorInterface::ABSOLUTE_URL
-        );
-        $integrationModuleData->actions = [
-            'activity' => $this->generateUrl('account_callback_activity'),
-            'settings' => $this->generateUrl('account_callback_settings'),
-        ];
-
-        if (!$account->isSimpleConnection()) {
-            $embedJsConfiguration = new EmbedJsConfiguration();
-            $embedJsConfiguration->entrypoint = EmbedStatic::SCRIPT_PATH;
-            $embedJsConfiguration->stylesheet = EmbedStatic::STYLESHEET_PATH;
-            $embedJsConfiguration->targets = EmbedStatic::TARGETS;
-            $embedJsConfiguration->runner = EmbedStatic::RUNNER;
-
-            $integrations = new Integrations();
-            $integrations->embedJs = $embedJsConfiguration;
-
-            $integrationModuleData->integrations = $integrations;
-        }
-
-        return $integrationModuleData;
     }
 
     #[Route(
@@ -311,12 +265,7 @@ class AccountController extends AbstractController
 
         if ($request->isMethod('POST')) {
             $client = $this->accountManager->getClient();
-            $client->integration->edit(
-                $account->getClientId(),
-                new IntegrationModulesEditRequest(
-                    $this->getIntegrationModuleData($account)
-                )
-            );
+            $this->registration->register($this->registration->build($account));
 
             $this->addFlash('success', 'settings_updated');
 

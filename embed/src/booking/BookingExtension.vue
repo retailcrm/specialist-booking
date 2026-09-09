@@ -1,7 +1,7 @@
 <template>
     <div>
         <UiToolbarButton @click="openBookingSidebar">
-            <IconCalendar class="UiIcon-icon-2pR-" />
+            <IconCalendar />
             {{ t('button') }}
         </UiToolbarButton>
 

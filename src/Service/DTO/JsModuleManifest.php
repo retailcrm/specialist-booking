@@ -5,8 +5,9 @@ namespace App\Service\DTO;
 final readonly class JsModuleManifest implements \JsonSerializable
 {
     /**
-     * @param string[] $targets
-     * @param string[] $scripts
+     * @param string[]                         $targets
+     * @param string[]                         $scripts
+     * @param array<int, array<string, mixed>> $pages
      */
     public function __construct(
         private string $code,
@@ -16,6 +17,7 @@ final readonly class JsModuleManifest implements \JsonSerializable
         private string $entrypoint,
         private array $scripts,
         private ?string $stylesheet = null,
+        private array $pages = [],
     ) {
     }
 
@@ -35,6 +37,10 @@ final readonly class JsModuleManifest implements \JsonSerializable
 
         if (null !== $this->stylesheet) {
             $result['stylesheet'] = $this->stylesheet;
+        }
+
+        if ([] !== $this->pages) {
+            $result['pages'] = $this->pages;
         }
 
         return $result;

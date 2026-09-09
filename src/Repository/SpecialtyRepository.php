@@ -30,6 +30,29 @@ class SpecialtyRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return Specialty[]
+     */
+    public function findByAccountOrderingByName(Account $account): array
+    {
+        return $this->findByAccountOrderingByNameQueryBuilder($account)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findOneByIdAndAccount(int $id, Account $account): ?Specialty
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.id = :id')
+            ->andWhere('s.account = :account')
+            ->setParameter('id', $id)
+            ->setParameter('account', $account)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    /**
      * @return array<array{name: string, cnt: int}>
      */
     public function getNamesWithSpecialistCount(Account $account): array

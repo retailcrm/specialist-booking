@@ -1,7 +1,7 @@
 <template>
     <div :class="$style.container">
         <UiButton appearance="tertiary" @click="$emit('back')">
-            <IconBack class="UiIcon-icon-2pR-" /> {{ t('back_to_specialists') }}
+            <IconBack /> {{ t('back_to_specialists') }}
         </UiButton>
 
         <div v-if="specialist" :class="$style.specialist_info">
@@ -30,7 +30,7 @@
                 <span>{{ formatMonth(currentDate) }}</span>
 
                 <UiButton appearance="tertiary" @click="nextMonth">
-                    <IconNext class="UiIcon-icon-2pR-" />
+                    <IconNext />
                 </UiButton>
             </div>
 

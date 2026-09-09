@@ -114,11 +114,22 @@ class EmbedApiController extends AbstractController
             $availableSpecialists[] = Specialist::fromEntity(
                 $specialist,
                 $specialistSlots[(int) $specialist->getId()],
-                $specialist->getPhoto() ? $fileSystem->resolve($specialist->getPhoto()) : null
+                $this->resolveSpecialistPhoto($specialist->getPhoto(), $fileSystem)
             );
         }
 
         return $this->json(['specialists' => $availableSpecialists]);
+    }
+
+    private function resolveSpecialistPhoto(?string $photo, ResolvableFilesystem $fileSystem): ?string
+    {
+        if (null === $photo) {
+            return null;
+        }
+
+        return str_starts_with($photo, 'http://') || str_starts_with($photo, 'https://')
+            ? $photo
+            : $fileSystem->resolve($photo);
     }
 
     #[Route(path: '/embed/api/branches', name: 'embed_api_branches', methods: ['POST'])]

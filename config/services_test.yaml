@@ -1,6 +1,25 @@
 services:
     App\Tests\Mock\Service\SpecialistBusySlotFetcher: ~
     App\Service\SpecialistBusySlotFetcherInterface: '@App\Tests\Mock\Service\SpecialistBusySlotFetcher'
+
+    Gaufrette\Adapter\InMemory: ~
+
+    Gaufrette\Filesystem:
+        arguments:
+            $adapter: '@Gaufrette\Adapter\InMemory'
+
+    Gaufrette\Extras\Resolvable\Resolver\StaticUrlResolver:
+        arguments:
+            $prefix: 'https://example.test/specialists'
+
+    Gaufrette\Extras\Resolvable\ResolvableFilesystem:
+        arguments:
+            $decorated: '@Gaufrette\Filesystem'
+            $resolver: '@Gaufrette\Extras\Resolvable\Resolver\StaticUrlResolver'
     App\Tests\Mock\Service\OrderBookingWriter:
         public: true
     App\Service\OrderBookingWriterInterface: '@App\Tests\Mock\Service\OrderBookingWriter'
+    App\Tests\Mock\Service\OrderBookingReader: ~
+    App\Service\OrderBookingReaderInterface: '@App\Tests\Mock\Service\OrderBookingReader'
+    App\Tests\Mock\Service\CustomerSearch: ~
+    App\Service\CustomerSearchInterface: '@App\Tests\Mock\Service\CustomerSearch'

@@ -49,6 +49,9 @@ final readonly class OrderBookingWriter implements OrderBookingWriterInterface
         if (isset($customer['first_name'])) {
             $order->firstName = $customer['first_name'];
         }
+        if (isset($customer['last_name'])) {
+            $order->lastName = $customer['last_name'];
+        }
         if (isset($customer['phone'])) {
             $order->phone = $customer['phone'];
         }

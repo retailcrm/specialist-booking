@@ -5,7 +5,7 @@
         :class="$style.back"
         @click="$emit('back')"
     >
-        <IconBack class="UiIcon-icon-2pR-" />
+        <IconBack />
         {{ t('back_to_cities') }}
     </UiButton>
 
