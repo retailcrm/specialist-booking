@@ -34,6 +34,6 @@ class EmbedStaticTest extends KernelTestCase
         }
 
         $calendar = array_values(array_filter($manifest['pages'], static fn (array $page): bool => EmbedStatic::PAGE_CODE_CALENDAR === $page['code']));
-        $this->assertSame('orders', $calendar[0]['parentMenuItemCode']);
+        $this->assertArrayNotHasKey('parentMenuItemCode', $calendar[0]);
     }
 }

@@ -109,14 +109,11 @@ final class EmbedStatic
                 'private_main_menu',
                 'page:' . self::PAGE_CODE_ROOT,
             ),
-            // рабочий экран менеджера — в продажах рядом с заказами, а не в настройках;
-            // в списке последний, чтобы индексы страниц настроек не сдвигались
             self::createPage(
                 self::PAGE_CODE_CALENDAR,
                 30,
                 self::translation('Booking calendar', 'Calendario de citas', 'Календарь записей'),
                 'activity_main_menu',
-                'orders',
             ),
         ];
     }
